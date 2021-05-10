@@ -1,1 +1,2 @@
-# prd_pic2fight
+# shoter_url
+URL短縮サービスプロダクト用リポジトリ
