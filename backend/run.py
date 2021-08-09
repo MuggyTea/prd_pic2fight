@@ -11,7 +11,7 @@ import io
 import time
 import numpy as np
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../dist/static', template_folder='../dist')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 logger = logging_setting('pic2fight_test')
 

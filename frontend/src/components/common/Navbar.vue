@@ -1,16 +1,11 @@
 <template>
-  <v-card flat tile
-  >
+  <v-card flat tile>
     <v-toolbar dense>
-      <v-toolbar-title
-      class="nav__title"
+      <v-toolbar-title class="nav__title">
+        <router-link to="/" class="toolbar-title">
+          AItter -ついじぇね-
+        </router-link></v-toolbar-title
       >
-      <router-link
-      to="/"
-      class="toolbar-title"
-      >
-      AItter -ついじぇね-
-      </router-link></v-toolbar-title>
       <!-- <img
         v-if="isLogin"
         class="title__logo__img"
@@ -22,9 +17,7 @@
       color="black"
       @click.stop="drawer=!drawer"
       > -->
-      <v-btn
-      text
-      >
+      <v-btn text>
         <!-- <v-avatar
         v-if="isLogin"
         color="grey lighten-4"
@@ -40,8 +33,8 @@
           src="../../assets/twigene_logo.png"
           alt="twigene"
         > -->
-      <!-- </v-avatar> -->
-    </v-btn>
+        <!-- </v-avatar> -->
+      </v-btn>
       <!-- </v-app-bar-nav-icon> -->
     </v-toolbar>
 
@@ -102,45 +95,47 @@
 </template>
 <script>
 // import Login from './Login'
-import Index from '../pages/Index'
+import Index from "../pages/Index";
 // import UserProfile from '../UserProfile'
-import TermsOfService from '../pages/TermsOfService'
-import PrivacyPlicy from '../pages/PrivacyPolicy'
-import firebase from 'firebase'
+import TermsOfService from "../pages/TermsOfService";
+import PrivacyPlicy from "../pages/PrivacyPolicy";
+import firebase from "firebase";
 
 export default {
-  name: 'Navbar',
-  components: {
-  },
-  data () {
+  name: "Navbar",
+  components: {},
+  data() {
     return {
       screenName: this.userinfo ? this.userinfo.screenName : null,
       drawer: null,
       links: [
-        { name: 'Home', path: '/', component: Index },
-        { name: 'プライバシーポリシー', path: '/privacy-policy', component: PrivacyPlicy },
-        { name: '利用規約', path: '/service', component: TermsOfService }
+        { name: "Home", path: "/", component: Index },
+        {
+          name: "プライバシーポリシー",
+          path: "/privacy-policy",
+          component: PrivacyPlicy,
+        },
+        { name: "利用規約", path: "/service", component: TermsOfService },
       ],
-      user: firebase.auth().currentUser
-    }
+      user: firebase.auth().currentUser,
+    };
   },
   mounted: function () {
-    firebase.auth().onAuthStateChanged(
-      user => {
-        this.user = user || {}
-      })
+    firebase.auth().onAuthStateChanged((user) => {
+      this.user = user || {};
+    });
   },
   // pathの:idを直接書き換えた時の対応
-  beforeRouteUpdate (to, from, next) {
+  beforeRouteUpdate(to, from, next) {
     // 動的セグメントが変わった場合は、コールバック関数でtargetIdを更新する
-    this.screen_name = to.params.id
-    next()
+    this.screen_name = to.params.id;
+    next();
   },
   methods: {
     signIn: function () {
-      this.$store.dispatch('auth/login')
-    }
-  }
+      this.$store.dispatch("auth/login");
+    },
+  },
   // computed: {
   //   isLogin () {
   //     return this.$store.getters['auth/check']
@@ -149,23 +144,23 @@ export default {
   //     return this.$store.getters['auth/user']
   //   }
   // }
-}
+};
 </script>
 <style>
 .nav__title {
-  color: #FF6F00;
+  color: #ff6f00;
   font-weight: bold;
 }
 
 .toolbar-title {
-  color: #FF6F00 !important;
+  color: #ff6f00 !important;
   text-decoration: inherit;
 }
 .title__logo {
   text-align: center;
 }
 .title__logo__img {
-    height: 47px;
-    width: 47px;
+  height: 47px;
+  width: 47px;
 }
 </style>
