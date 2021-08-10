@@ -1,7 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 // import Home from "../views/Home.vue";
-import Index from "../components/pages/Index"
+// ページコンポーネントのインポート
+import NotFound from '../components/pages/NotFound'
+import Index from '../components/pages/Index'
+import TermsOfService from '../components/pages/TermsOfService'
+import PrivacyPolicy from '../components/pages/PrivacyPolicy'
 
 Vue.use(VueRouter);
 
@@ -11,14 +15,23 @@ const routes = [{
         component: Index,
     },
     {
-        path: "/about",
-        name: "About",
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () =>
-            import ( /* webpackChunkName: "about" */ "../views/About.vue"),
+        path: '/404',
+        component: NotFound
     },
+    {
+        name: 'TermsOfService',
+        path: '/service',
+        component: TermsOfService
+    },
+    {
+        name: 'PrivacyPolicy',
+        path: '/privacy-policy',
+        component: PrivacyPolicy
+    },
+    {
+        path: '*',
+        redirect: '/404'
+    }
 ];
 
 const router = new VueRouter({
