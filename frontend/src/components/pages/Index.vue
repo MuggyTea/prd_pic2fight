@@ -1,14 +1,9 @@
 <template>
   <div class="index__conteiner text-center">
-    <h1>自分botを作ってみよう！</h1>
+    <h1>画像に力を与えるメーカー</h1>
     <h3 class="index__description">
-      Aitter -ついじぇね-
-      は、「あなたっぽい」ツイートを自動生成するサービスです。<br />ツイートすればするほど学習データが増えてあなたらしくなります
+      画像にフォースを与えます
     </h3>
-    <p class="index__attention">
-      初めてのツイート生成は時間が掛かります。 <br />また鍵アカウントの場合、
-      <br />初回ツイート生成時のみ鍵を外して頂けたら、それ以降は鍵アカウントでも使用可能です。
-    </p>
     <!-- <div class="account__tweetgenerate">
         <select-getenrate-user
           @generateScreenName="generateAccountName"
@@ -25,6 +20,7 @@
     <!-- <div>
         <twitter-time-line></twitter-time-line>
       </div> -->
+    <set-function/>
     <index-explain></index-explain>
   </div>
 </template>
@@ -33,6 +29,7 @@
 // import Login from '../common/Login'
 // import GenerateTweetButton from '../GenerateTweetButton'
 import IndexExplain from "../common/IndexExplain";
+import SetFunction from "../SetFunction"
 // import TwitterTimeLine from '../common/TwitterTimeLine'
 // import SelectGenerateUser from '../SelectGenerateUser'
 export default {
@@ -49,6 +46,7 @@ export default {
     // 'login': Login,
     // 'generate-tweet-button': GenerateTweetButton,
     "index-explain": IndexExplain,
+    "set-function": SetFunction
     // 'twitter-time-line': TwitterTimeLine,
     // 'select-getenrate-user': SelectGenerateUser
   },
@@ -69,7 +67,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
+<style lang="scss">
 h1 {
   font-weight: bold;
   font-size: 24px;
@@ -95,6 +93,7 @@ a {
 }
 .index__conteiner {
   margin: auto;
+  padding: 20px;
 }
 .index__attention {
   color: red;

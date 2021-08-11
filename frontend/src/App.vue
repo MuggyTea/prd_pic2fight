@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <navbar-view></navbar-view>
-    <v-main>
+    <v-main cass="main__conteiner">
       <router-view />
     </v-main>
     <footer-view></footer-view>
@@ -24,7 +24,7 @@ export default {
   }),
 };
 </script>
-<style>
+<style lang="scss">
 .main__conteiner {
   margin: auto;
   padding: 20px !important;

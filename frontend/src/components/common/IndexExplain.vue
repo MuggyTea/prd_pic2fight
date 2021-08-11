@@ -115,7 +115,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .index__description__icon {
   width: 40px;
   height: 40px;
