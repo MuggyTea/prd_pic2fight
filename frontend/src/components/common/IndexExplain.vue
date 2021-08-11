@@ -2,92 +2,59 @@
   <v-container class="grey lighten-5">
     <v-row justify="center">
       <v-col md="10">
-        <h1>AItter-ついじぇね-って？</h1>
+        <h1>Sample</h1>
       </v-col>
-    </v-row>
-    <v-row no-gutters justify="center">
-      <v-col cols="4" md="5">
-        <font-awesome-icon
-          class="index__description__icon"
-          :icon="['fas', 'user-astronaut']"
-        >
-        </font-awesome-icon>
+      <v-col md="10">
+        <h2>これが</h2>
       </v-col>
-      <v-col cols="4" sm="5">
-        <font-awesome-icon
-          class="index__description__icon"
-          :icon="['fas', 'comment-dots']"
-        >
-        </font-awesome-icon>
-      </v-col>
-      <v-row justify="center">
-        <v-col md="10">
-          <h2>自分ロボットを作ってみよう！</h2>
-        </v-col>
-      </v-row>
-    </v-row>
-    <v-row justify="center">
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
-          機械学習を使ってあなたのツイートを解析し、<br />まるで自分が書いたかのようなツイートを自動生成するツイートジェネレーターです。
+            <v-img
+            src="../../../public/static/exsample/sample_original_image.png"
+            max-height="300"
+            class="grey darken-4"
+          ></v-img>
+          <v-card-title>
+            Before
+          </v-card-title>
         </v-card>
       </v-col>
-    </v-row>
-    <v-row no-gutters justify="center">
-      <v-col cols="4" md="5">
-        <font-awesome-icon
-          class="index__description__icon"
-          :icon="['fas', 'dove']"
-        >
-        </font-awesome-icon>
+      <v-col md="10">
+        <h2>こうなります</h2>
       </v-col>
-      <v-col cols="4" sm="5">
-        <font-awesome-icon
-          class="index__description__icon"
-          :icon="['fab', 'twitter']"
-        >
-        </font-awesome-icon>
-      </v-col>
-      <v-row justify="center">
-        <v-col md="10">
-          <h2>遊ぶたびに精度が上がります</h2>
-        </v-col>
-      </v-row>
-    </v-row>
-    <v-row justify="center">
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
-          ツイート生成するたびに現在のツイートを集計するので、<br />ツイート数が増えれば増えるほど、ついじぇねの精度は上がっていきます
+            <v-img
+            src="../../../public/static/exsample/sample_converted_image.png"
+            max-height="300"
+            class="grey darken-4"
+          ></v-img>
+          <v-card-title>
+            After Image
+          </v-card-title>
         </v-card>
       </v-col>
-    </v-row>
-    <v-row no-gutters justify="center">
-      <v-col cols="4" md="5">
-        <font-awesome-icon
-          class="index__description__icon"
-          :icon="['fas', 'ghost']"
-        >
-        </font-awesome-icon>
-      </v-col>
-      <v-col cols="4" sm="5">
-        <font-awesome-icon
-          class="index__description__icon"
-          :icon="['fas', 'chart-bar']"
-        >
-        </font-awesome-icon>
-      </v-col>
-      <v-row justify="center">
-        <v-col md="10">
-          <h2>初めてのツイート生成には時間がかかります</h2>
-        </v-col>
-      </v-row>
-    </v-row>
-    <v-row justify="center">
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
-          3200ツイートを解析するので、2~5分ほど時間がかかります。<br />
-          バックグラウンドで動作するので、一度生成ボタンを押したらブラウザを閉じても大丈夫です。<br />
-          ２回目以降は時間はかかりません。
+            <!-- <v-img
+            src="../../../public/static/exsample/sample_video.mp4"
+            max-height="300"
+            class="grey darken-4"
+          ></v-img> -->
+          <video
+          max-height="300"
+          controls
+          autoplay muted playsinline
+          src="../../../public/static/exsample/sample_video.mp4"
+          >
+            <!-- <source
+            src="../../../public/static/exsample/sample_video.mp4"
+            type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+            > -->
+          </video>
+          <v-card-title>
+            After Video
+          </v-card-title>
         </v-card>
       </v-col>
     </v-row>

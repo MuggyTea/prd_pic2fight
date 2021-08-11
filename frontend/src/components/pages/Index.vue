@@ -1,9 +1,9 @@
 <template>
   <div class="index__conteiner text-center">
-    <h1>画像に力を与えるメーカー</h1>
-    <h3 class="index__description">
-      画像にフォースを与えます
-    </h3>
+    <h1>画像に勢いをつけるメーカー</h1>
+    <h2 class="index__description">
+      May the force be with your image.
+    </h2>
     <!-- <div class="account__tweetgenerate">
         <select-getenrate-user
           @generateScreenName="generateAccountName"
@@ -73,8 +73,7 @@ h1 {
   font-size: 24px;
 }
 h2 {
-  font-weight: bold;
-  font-size: 20px;
+  font-size: 10px;
 }
 ul {
   list-style-type: none;

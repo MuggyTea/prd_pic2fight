@@ -23,9 +23,9 @@
           text
           rounded
           class="footer__col1"
-          href="https://twitter.com/twigene_aitter"
+          href="https://twitter.com/MuggyTeaa"
         >
-          公式Twitter
+          製作者Twitter
         </v-btn>
         <v-btn
           color="grey"
@@ -46,7 +46,7 @@
     </v-btn> -->
         <v-col class="amber lighten-5 py-4 text-center grey--text" cols="12">
           {{ new Date().getFullYear() }} --
-          <strong>Aitter - ついじぇね - </strong>
+          <strong>Copyright 画像に勢いをつけるメーカー</strong>
         </v-col>
       </v-row>
     </v-footer>
