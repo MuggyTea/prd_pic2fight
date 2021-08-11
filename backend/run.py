@@ -71,6 +71,7 @@ def output_photo():
         # レスポンスデータを作る
         # res_img = make_response()
         res_img = make_response()
+        blur_img_url='static/images/upload.jpg'
         # 放射ブラーした画像
         # res_img.data = output_img
         # ヘッダー情報追加
@@ -78,7 +79,7 @@ def output_photo():
         # res_img.headers['Contet-Type'] = 'Image'
         logger.info('done')
         # 画像を返す
-        return render_template('index.html', raw_img_url='static/images/orig.jpg', blur_img_url='static/images/upload.jpg')
+        return output_img
     except Exception as e:
         logger.error(traceback.format_exc())
         return str(e)
