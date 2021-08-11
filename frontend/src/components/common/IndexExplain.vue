@@ -11,7 +11,7 @@
         <v-card class="pa-2" outlined tile>
             <v-img
             src="../../../public/static/exsample/sample_original_image.png"
-            max-height="300"
+            max-height="500"
             class="grey darken-4"
           ></v-img>
           <v-card-title>
@@ -26,7 +26,7 @@
         <v-card class="pa-2" outlined tile>
             <v-img
             src="../../../public/static/exsample/sample_converted_image.png"
-            max-height="300"
+            max-height="500"
             class="grey darken-4"
           ></v-img>
           <v-card-title>
@@ -42,7 +42,7 @@
             class="grey darken-4"
           ></v-img> -->
           <video
-          max-height="300"
+          max-height="500"
           controls
           autoplay muted playsinline
           src="../../../public/static/exsample/sample_video.mp4"

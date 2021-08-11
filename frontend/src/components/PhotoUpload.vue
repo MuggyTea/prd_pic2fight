@@ -20,7 +20,7 @@
                 v-model="imageName"
                 prepend-icon="attach_file"
                 >
-                画像アップロード
+                画像を選択
                 <input
                 type="file"
                 style="display: none"

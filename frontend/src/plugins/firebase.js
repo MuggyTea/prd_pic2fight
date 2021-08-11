@@ -17,16 +17,15 @@ import "firebase/firestore";
 //     measurementId: "G-5M4RH2DZZ2"
 // };
 
-// 本番用
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyASl-5HORauWkx_iTmZ2dn-SyI0L90jA-w",
-  authDomain: "aitter-twigene.firebaseapp.com",
-  databaseURL: "https://aitter-twigene.firebaseio.com",
-  projectId: "aitter-twigene",
-  storageBucket: "aitter-twigene.appspot.com",
-  messagingSenderId: "416427124433",
-  appId: "1:416427124433:web:f5a63ca70ff60099d247f0",
-  measurementId: "G-XF3CWTJMTP",
+    apiKey: "AIzaSyC9r5N0LwaebA5qfAUussk_JUWMoL8GbrA",
+    authDomain: "pic2force.firebaseapp.com",
+    projectId: "pic2force",
+    storageBucket: "pic2force.appspot.com",
+    messagingSenderId: "838988345433",
+    appId: "1:838988345433:web:e2e8ca2491616a37ec8148",
+    measurementId: "G-1FBT6SK2YL"
 };
 
 // Initialize Firebase
