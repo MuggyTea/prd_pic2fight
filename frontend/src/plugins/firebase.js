@@ -1,7 +1,7 @@
 // import Vue from 'vue'
 // import { firestorePlugin } from 'vuefire'
-import firebase from "firebase/app";
-import "firebase/firestore";
+import firebase from 'firebase/app';
+import 'firebase/firestore';
 
 // Vue.use(firestorePlugin)
 
@@ -19,13 +19,13 @@ import "firebase/firestore";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyC9r5N0LwaebA5qfAUussk_JUWMoL8GbrA",
-    authDomain: "pic2force.firebaseapp.com",
-    projectId: "pic2force",
-    storageBucket: "pic2force.appspot.com",
-    messagingSenderId: "838988345433",
-    appId: "1:838988345433:web:e2e8ca2491616a37ec8148",
-    measurementId: "G-1FBT6SK2YL"
+    apiKey: 'AIzaSyC9r5N0LwaebA5qfAUussk_JUWMoL8GbrA',
+    authDomain: 'pic2force.firebaseapp.com',
+    projectId: 'pic2force',
+    storageBucket: 'pic2force.appspot.com',
+    messagingSenderId: '838988345433',
+    appId: '1:838988345433:web:e2e8ca2491616a37ec8148',
+    measurementId: 'G-1FBT6SK2YL',
 };
 
 // Initialize Firebase

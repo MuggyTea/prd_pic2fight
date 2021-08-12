@@ -5,18 +5,21 @@
       <router-view />
     </v-main>
     <footer-view></footer-view>
+    <button-back-to-top/>
   </v-app>
 </template>
 
 <script>
 // import Navbar from './components/common/Navbar'
 import Footer from './components/common/Footer'
+import BottonBackToTop from './components/common/BottonBackToTop'
 
 export default {
   name: "App",
   components: {
     // "navbar-view": Navbar,
-    "footer-view": Footer
+    "footer-view": Footer,
+    "button-back-to-top": BottonBackToTop
   },
 
   data: () => ({

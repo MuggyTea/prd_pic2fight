@@ -2,7 +2,7 @@
   <div class="index__conteiner text-center">
     <h1>画像に勢いをつけるメーカー</h1>
     <h2 class="index__description">
-      May the force be with your image.
+      あなたの画像に勢いをつけます
     </h2>
     <!-- <div class="account__tweetgenerate">
         <select-getenrate-user
@@ -73,7 +73,7 @@ h1 {
   font-size: 24px;
 }
 h2 {
-  font-size: 10px;
+  font-size: 18px;
 }
 ul {
   list-style-type: none;
@@ -87,7 +87,8 @@ a {
   color: #42b983;
 }
 .index__description {
-  font-size: small;
+  // font-size: small;
+  font-size: 18px;
   padding: 10px;
 }
 .index__conteiner {
