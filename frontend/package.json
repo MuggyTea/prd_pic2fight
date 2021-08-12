@@ -20,6 +20,7 @@
         "core-js": "^3.6.5",
         "firebase": "^8.2.10",
         "jquery": "^1.9.1",
+        "mitt": "^3.0.0",
         "roboto-fontface": "*",
         "vue": "^2.6.11",
         "vue-axios": "^3.2.5",

@@ -1,5 +1,4 @@
 <template>
-  <div class="tweetlist index__conteiner text-center">
      <!-- <v-card
      class="mx-auto"
      color="#FFFFFF"
@@ -42,7 +41,7 @@
        <!-- </v-list-item>
      </v-card-actions>
      </v-card> -->
-      <v-btn
+      <!-- <v-btn
         class="amber darken-2 tweetgenerate__btn"
         dark
         @click.prevent="TweetGenerate"
@@ -50,15 +49,19 @@
         :loading="processing"
         :block=true
         >Upload
-      </v-btn>
-      <v-row v-if="processing" justify="center">
+      </v-btn> -->
+      <!-- <v-row v-if="converted_image" justify="center"> -->
+    <v-container class="grey lighten-5">
+      <v-row justify="center">
       <v-col md="10">
         <h1>生成結果！</h1>
       </v-col>
+      </v-row>
+      <v-row justify="center">
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
             <v-img
-            :src="original_image"
+            :src="original_image_obj"
             max-height="500"
             class="grey darken-4"
           ></v-img>
@@ -67,9 +70,13 @@
           </v-card-title>
         </v-card>
       </v-col>
+      </v-row>
+      <v-row justify="center">
       <v-col md="10">
         <h2>こうなります</h2>
       </v-col>
+      </v-row>
+      <v-row justify="center">
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
             <v-img
@@ -93,6 +100,8 @@
         </v-card-actions>
         </v-card>
       </v-col>
+      </v-row>
+      <v-row justify="center">
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
             <!-- <v-img
@@ -128,7 +137,7 @@
         </v-card>
       </v-col>
     </v-row>
-</div>
+  </v-container>
 </template>
 
 <script>
@@ -147,8 +156,8 @@ export default {
   },
   data () {
     return {
-      original_image: null,
-      converted_image: null,
+      // original_image: this.original_image,
+      // converted_image: this.converted_image,
       converted_video: null,
       NotFound: false,
       processing: false,
@@ -158,12 +167,30 @@ export default {
       ishashtag: false
     }
   },
-  // props: {
-  //   original_image: {
-  //     type: Object,
-  //     default: null
-  //   }
+  // mounted() {
+  //     // const vm = new Vue();
+  //     console.log(this.original_image)
+
+  //     // mitt().on('original_image', this.original_image)
+  //     // const vm = new Vue();
+  //     console.log(this.converted_image)
+
+  //     // mitt().on('converted_image', this.converted_image)
   // },
+  props: {
+    original_image: {
+      type: File,
+      default: null
+    },
+    original_image_obj: {
+      type: Object,
+      default: null
+    },
+    converted_image: {
+      type: Object,
+      default: null
+    }
+  },
   // pathの:idを直接書き換えた時の対応
   beforeRouteUpdate (to, from, next) {
     // 動的セグメントが変わった場合は、コールバック関数でtargetIdを更新する
@@ -240,13 +267,11 @@ export default {
       // POST送信する
       axios.post(
         "/convert_img",
-        {
-          "original_image": this.original_image
-        }
+          this.original_image
       )
       // 送信完了
-        .then((res) => {
-          this.converted_image = res.data
+        .then(() => {
+          // this.converted_image = res.data
           this.processing = false
         })
         .catch(error => {
@@ -295,16 +320,16 @@ export default {
         this.$router.push("/")
       }
     }
-  },
-  // ゲッター
-  computed: {
-    // isLogin () {
-    //   return this.$store.getters['auth/check']
-    // },
-    // userinfo () {
-    //   return this.$store.getters['auth/user']
-    // }
   }
+  // // ゲッター
+  // computed: {
+  //   // isLogin () {
+  //   //   return this.$store.getters['auth/check']
+  //   // },
+  //   // userinfo () {
+  //   //   return this.$store.getters['auth/user']
+  //   // }
+  // }
 }
 </script>
 <style>

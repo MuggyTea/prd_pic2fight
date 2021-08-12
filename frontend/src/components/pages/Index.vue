@@ -20,7 +20,7 @@
     <!-- <div>
         <twitter-time-line></twitter-time-line>
       </div> -->
-    <set-function/>
+    <photo-upload />
     <index-explain></index-explain>
   </div>
 </template>
@@ -29,7 +29,8 @@
 // import Login from '../common/Login'
 // import GenerateTweetButton from '../GenerateTweetButton'
 import IndexExplain from "../common/IndexExplain";
-import SetFunction from "../SetFunction"
+import PhotoUpload from '../PhotoUpload';
+// import SetFunction from "../SetFunction"
 // import TwitterTimeLine from '../common/TwitterTimeLine'
 // import SelectGenerateUser from '../SelectGenerateUser'
 export default {
@@ -46,7 +47,8 @@ export default {
     // 'login': Login,
     // 'generate-tweet-button': GenerateTweetButton,
     "index-explain": IndexExplain,
-    "set-function": SetFunction
+    // "set-function": SetFunction,
+    "photo-upload": PhotoUpload
     // 'twitter-time-line': TwitterTimeLine,
     // 'select-getenrate-user': SelectGenerateUser
   },

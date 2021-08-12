@@ -2,44 +2,61 @@
     <!-- <div v-show="value" class="photo-form"> -->
     <div class="photo-form">
         <!-- <v-flex xs12 sm8 md4> -->
-            <v-card class="elevation-12">
-                <output class="form__output" v-if="preview">
-                    <img
-                        :src="preview"
-                        alt=""
-                        max-width="200px"
-                        height="200px"
-                        >
-                </output>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                <v-btn
-                color="primary"
-                label="Select Image"
-                @click="pickFile"
-                v-model="imageName"
-                prepend-icon="attach_file"
-                >
-                画像を選択
-                <input
-                type="file"
-                style="display: none"
-                ref="image"
-                accept="image/*"
-                @change="onFilePicked"
-                />
-                </v-btn>
-                </v-card-actions>
-            </v-card>
+        <v-card class="elevation-12">
+            <output class="form__output" v-if="preview">
+                <img
+                    :src="preview"
+                    alt=""
+                    max-width="200px"
+                    height="200px"
+                    >
+            </output>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+            <v-btn
+            color="primary"
+            label="Select Image"
+            @click="pickFile"
+            v-model="imageName"
+            prepend-icon="attach_file"
+            >
+            画像を選択
+            <input
+            type="file"
+            style="display: none"
+            ref="image"
+            accept="image/*"
+            @change="onFilePicked"
+            />
+            </v-btn>
+            </v-card-actions>
+        </v-card>
+      <v-btn
+        class="amber darken-2 tweetgenerate__btn"
+        dark
+        @click.prevent="ConvertPhoto"
+        :disabled="processing"
+        :loading="processing"
+        :block=true
+        >Upload
+      </v-btn>
+      <photo-result
+        :original_image_obj="imageURL"
+        :original_image="imageFile"
+        :converted_image="converted_image"
+      />
         <!-- </v-flex> -->
-
     </div>
-
 </template>
 
 <script>
+import axios from "axios"
+// import NotFound from "./pages/NotFound"
+import CONSTANT from "./constans/index"
 import firebase from 'firebase'
 import firestore from '../plugins/firebase'
+import PhotoResult from '../components/PhotoResult'
+// import mitt from "mitt"
 export default {
   name: 'PhotoUpload',
   // props: {
@@ -48,6 +65,9 @@ export default {
   //     required: true
   //   }
   // },
+  components: {
+    'photo-result': PhotoResult
+  },
   data () {
     return {
       preview: null,
@@ -56,9 +76,15 @@ export default {
       dialog: false,
       imageName: '',
       imageURL: '',
-      imageFile: ''
+      imageFile: null,
+      processing: false,
+      converted_image: null
     }
   },
+  // mounted() {
+  //   mitt().emit('original_image', this.imageFile)
+  //   mitt().emit('converted_image', this.converted_image)
+  // },
   methods: {
     pickFile () {
       this.$refs.image.click()
@@ -103,17 +129,65 @@ export default {
       const storageRef = firebase.storage().ref()
       // ファイルパス設定
       // eslint-disable-next-line no-template-curly-in-string
-      const mountainRef = storageRef.child('linkEyeCatchImage/' + this.imageFile.name)
+      const mountainRef = storageRef.child('originalImage/' + this.imageFile.name)
       // ファイルを適用してファイルアップロード
       mountainRef.put(this.imageFile).then(snapshot => {
         snapshot.ref.getDownloadURL().then(downloadURL => {
           this.imageURL = downloadURL
           console.log(this.imageURL)
-          firestore.collection('LinkPage').add({
-            'photoURL': downloadURL
+          firestore.collection('Images').add({
+            'originalPhotoURL': downloadURL
           })
         })
       })
+    },
+    ConvertPhoto () {
+      if (this.processing) return
+      this.processing = true
+      this.uploadPhoto ()
+      // const vm = new Vue();
+      // this.mitt().emit('original_image', this.imageFile)
+      // POST送信する
+      // axios.post(
+      //   "/convert_img",
+      //   {
+      //     "original_image": this.imageFile
+      //   }
+      // )
+      axios.post(
+        "/convert_img",
+        
+        this.imageFile
+        
+      )
+      // 送信完了
+        .then((res) => {
+          this.converted_image = res.data
+          this.processing = false
+          // this.mitt().emit('converted_image', this.converted_image)
+          console.log(this.converted_image)
+        })
+        .catch(error => {
+          this.processing = false
+          this.generatedTweet = "ツイート生成に失敗しました。もう一度試してみてください"
+          axios.post(
+            CONSTANT.SLACK_SERVER_ERROR,
+            JSON.stringify({
+              text: this.generatedTweet + "\n" + error,
+              username: this.screen_name
+            }), {
+              withCredentials: false,
+              transformRequest: [(data, headers) => {
+                delete headers.common.Authorization
+                delete headers.post["Content-Type"]
+                return data
+              }]
+              }).then(() => {
+              window.location.reload()
+          }).catch(err => {
+            console.log("error: ", err)
+          })
+        })
     }
   }
 }
