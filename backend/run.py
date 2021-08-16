@@ -45,7 +45,7 @@ def add_header(r):
 def output_photo():
     try:
         # ファイルを受け取る
-        img_file = request.files['file']
+        img_file = request.files['original_image']
         logger.info('file data: {}'.format(img_file))
         # 画像ファイル以外は弾く
         if not allow_file(img_file.filename):
@@ -61,7 +61,11 @@ def output_photo():
         # BGRをRGBに変換
         # dst_img = cv2.cvtColor(img_file, cv2.COLOR_BGR2RGB)
         # ファイルをローカルに保存
-        cv2.imwrite('static/images/orig.jpg', input_data_img)
+        # オブジェクト名をディレクトリ名とし、実行ディレクトリと同じ階層にログファイル保存ディレクトリを作成
+        # if os.path.exists(str("static/images/")) is not True:
+        #     os.mkdir(str("static/images/"))
+        cv2.imwrite('static/result/org.jpg', input_data_img)
+        # cv2.imwrite('orig.jpg', input_data_img)
         # 放射ブラーした画像を返す。引数は元画像・ぼかしの中心座標(x, y)
         output_img = img_blur(f, [0, 0], logger)
         # ファイルをローカルに保存
@@ -71,15 +75,17 @@ def output_photo():
         # レスポンスデータを作る
         # res_img = make_response()
         res_img = make_response()
-        blur_img_url='static/images/upload.jpg'
+        original_img_url = 'static/result/org.jpg'
+        blur_img_url = 'static/result/upload.jpg'
         # 放射ブラーした画像
         # res_img.data = output_img
         # ヘッダー情報追加
         # res_img.headers.set('Content-Disposition', 'attachment', filename='static/images/upload.jpg')
         # res_img.headers['Contet-Type'] = 'Image'
         logger.info('done')
+        converted_img_dic = {"original_img": original_img_url, "converted_img": blur_img_url}
         # 画像を返す
-        return output_img
+        return converted_img_dic
     except Exception as e:
         logger.error(traceback.format_exc())
         return str(e)

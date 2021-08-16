@@ -133,3 +133,9 @@ static/EncountEffects
 static/images
 .history/
 pic2fight_test
+frontend/src/components/constans
+backend/app/settings/config_file.py
+backend/app/settings/firebase.py
+backend/app/settings/certification.py
+backend/app/settings/pic2force-firebase-adminsdk-s0gcr-aaabf563e2.json
+frontend/public/static/result/

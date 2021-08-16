@@ -41,7 +41,7 @@
         >Upload
       </v-btn>
       <photo-result
-        :original_image_obj="imageURL"
+        :original_image_obj="original_image"
         :original_image="imageFile"
         :converted_image="converted_image"
       />
@@ -78,6 +78,7 @@ export default {
       imageURL: '',
       imageFile: null,
       processing: false,
+      original_image: null,
       converted_image: null
     }
   },
@@ -147,22 +148,34 @@ export default {
       this.uploadPhoto ()
       // const vm = new Vue();
       // this.mitt().emit('original_image', this.imageFile)
+      let config = {
+        headers: {
+            'content-type': 'multipart/form-data'
+        }
+      };
+      // FormData を利用して File を POST する
+      let formData = new FormData();
+      formData.append('original_image', this.imageFile);
       // POST送信する
       // axios.post(
       //   "/convert_img",
       //   {
       //     "original_image": this.imageFile
-      //   }
+      //   },
+      //   config
       // )
       axios.post(
         "/convert_img",
-        
-        this.imageFile
-        
+        formData,
+        config
       )
       // 送信完了
         .then((res) => {
-          this.converted_image = res.data
+          console.log(res)
+          console.log(res.data)
+          // this.converted_image = res.data
+          this.original_image = res.data.original_img
+          this.converted_image = res.data.converted_img
           this.processing = false
           // this.mitt().emit('converted_image', this.converted_image)
           console.log(this.converted_image)

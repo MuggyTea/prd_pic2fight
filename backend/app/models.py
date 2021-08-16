@@ -65,5 +65,6 @@ def img_blur(src, pos, logger, ratio=0.9, iterations=20, margin=1.3):
     #BGRをRGBに変換.
     # dst_img = cv2.cvtColor(dst, cv2.COLOR_BGR2RGB)
     # ファイルをローカルに保存
-    cv2.imwrite('static/images/upload.jpg', dst)
+    cv2.imwrite('static/result/upload.jpg', dst)
+    # cv2.imwrite('upload.jpg', dst)
     return dst
