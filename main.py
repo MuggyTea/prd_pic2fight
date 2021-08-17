@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
-from logging import NullHandler
 from flask import Flask, render_template, request, make_response, send_file
-from app.settings.logging_prd import logging_setting
-from app.functions.connect_firestorage import upload_bucket_file, download_bucket_file
-from app.settings.firebase import db, timestamp
+from backend.app.settings.logging_prd import logging_setting
+from backend.app.settings.firebase import db, timestamp
+from backend.app.func.connect_firestorage import upload_bucket_file, download_bucket_file
 import traceback
-from app.models import img_blur
+from backend.app.models import img_blur
 from PIL import Image as im
 import cv2
 import os
@@ -15,11 +14,11 @@ import time
 import numpy as np
 import uuid
 
-app = Flask(__name__, static_folder='../dist/static', template_folder='../dist')
+app = Flask(__name__, static_folder='dist/static', template_folder='dist')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-logger = logging_setting('pic2fight_test')
-original_local_image_file = 'org.jpeg'
-converted_local_image_file = 'upload.jpeg'
+logger = logging_setting('/tmp')
+original_local_image_file = '/tmp/org.jpeg'
+converted_local_image_file = '/tmp/upload.jpeg'
 content_type_jpg = 'image/jpeg'
 content_type_mp4 = 'video/mp4'
 db_images = db.collection("UploadImages")

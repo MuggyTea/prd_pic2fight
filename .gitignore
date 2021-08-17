@@ -144,3 +144,4 @@ upload.jpeg
 firestore.rules
 storage.rules
 .firebase
+app.yaml

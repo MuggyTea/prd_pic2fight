@@ -53,10 +53,9 @@
 import axios from "axios"
 // import NotFound from "./pages/NotFound"
 import CONSTANT from "./constans/index"
-import firebase from 'firebase'
-import firestore from '../plugins/firebase'
+// import firebase from 'firebase'
+// import firestore from '../plugins/firebase'
 import PhotoResult from '../components/PhotoResult'
-// import mitt from "mitt"
 export default {
   name: 'PhotoUpload',
   // props: {
@@ -126,23 +125,23 @@ export default {
       reader.readAsDataURL(event.target.files[0])
     },
     // 画像アップロード処理
-    uploadPhoto () {
-      // ストレージオブジェクト作成
-      const storageRef = firebase.storage().ref()
-      // ファイルパス設定
-      // eslint-disable-next-line no-template-curly-in-string
-      const mountainRef = storageRef.child('originalImage/' + this.imageFile.name)
-      // ファイルを適用してファイルアップロード
-      mountainRef.put(this.imageFile).then(snapshot => {
-        snapshot.ref.getDownloadURL().then(downloadURL => {
-          this.imageURL = downloadURL
-          console.log(this.imageURL)
-          firestore.collection('Images').add({
-            'originalPhotoURL': downloadURL
-          })
-        })
-      })
-    },
+    // uploadPhoto () {
+    //   // ストレージオブジェクト作成
+    //   const storageRef = firebase.storage().ref()
+    //   // ファイルパス設定
+    //   // eslint-disable-next-line no-template-curly-in-string
+    //   const mountainRef = storageRef.child('originalImage/' + this.imageFile.name)
+    //   // ファイルを適用してファイルアップロード
+    //   mountainRef.put(this.imageFile).then(snapshot => {
+    //     snapshot.ref.getDownloadURL().then(downloadURL => {
+    //       this.imageURL = downloadURL
+    //       console.log(this.imageURL)
+    //       firestore.collection('Images').add({
+    //         'originalPhotoURL': downloadURL
+    //       })
+    //     })
+    //   })
+    // },
     ConvertPhoto () {
       if (this.processing) return
       this.processing = true

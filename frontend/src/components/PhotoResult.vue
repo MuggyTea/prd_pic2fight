@@ -51,7 +51,7 @@
         >Upload
       </v-btn> -->
       <!-- <v-row v-if="converted_image" justify="center"> -->
-    <v-container class="grey lighten-5">
+    <v-container v-if="converted_image_URL" class="grey lighten-5">
       <v-row justify="center">
       <v-col md="10">
         <h1>生成結果！</h1>
@@ -254,11 +254,12 @@ export default {
       const url = encodeURIComponent(location.href)
       const generatedText = encodeURI(this.generatedTweet + "\n\n")
       // ハッシュタグを付けないにチェックボックスが入っていたら、ハッシュタグを付けない
-      if (this.ishashtag == true) {
-        this.tweetUrl = "https://twitter.com/intent/tweet?text=" + generatedText + "&url=" + url
-      } else {
-        this.tweetUrl = "https://twitter.com/intent/tweet?text=" + generatedText + "%23ついじぇね%20%23自分bot%0A" + "&url=" + url
-      }
+      // if (this.ishashtag == true) {
+      //   this.tweetUrl = "https://twitter.com/intent/tweet?text=" + generatedText + "&url=" + url
+      // } else {
+      //   this.tweetUrl = "https://twitter.com/intent/tweet?text=" + generatedText + "%23ついじぇね%20%23自分bot%0A" + "&url=" + url
+      // }
+      this.tweetUrl = "https://twitter.com/intent/tweet?%23画像に勢いをつけるメーカー%20%23" + "&url=" + url
       return this.tweetUrl
     },
     TweetGenerate () {
