@@ -41,9 +41,9 @@
         >Upload
       </v-btn>
       <photo-result
-        :original_image_obj="original_image"
-        :original_image="imageFile"
-        :converted_image="converted_image"
+        :original_image_URL="original_image_storageURL"
+        :converted_image_URL="converted_image_storageURL"
+        :converted_video_URL="converted_video_storageURL"
       />
         <!-- </v-flex> -->
     </div>
@@ -78,8 +78,9 @@ export default {
       imageURL: '',
       imageFile: null,
       processing: false,
-      original_image: null,
-      converted_image: null
+      original_image_storageURL: null,
+      converted_image_storageURL: null,
+      converted_video_storageURL: null
     }
   },
   // mounted() {
@@ -145,7 +146,7 @@ export default {
     ConvertPhoto () {
       if (this.processing) return
       this.processing = true
-      this.uploadPhoto ()
+      // this.uploadPhoto ()
       // const vm = new Vue();
       // this.mitt().emit('original_image', this.imageFile)
       let config = {
@@ -174,11 +175,12 @@ export default {
           console.log(res)
           console.log(res.data)
           // this.converted_image = res.data
-          this.original_image = res.data.original_img
-          this.converted_image = res.data.converted_img
+          this.original_image_storageURL = res.data.original_img
+          this.converted_image_storageURL = res.data.converted_img
           this.processing = false
           // this.mitt().emit('converted_image', this.converted_image)
-          console.log(this.converted_image)
+          console.log("firestorageに入れたオリジナルイメージURL"+ this.original_image_storageURL)
+          console.log("生成結果URL"+ this.converted_image_storageURL)
         })
         .catch(error => {
           this.processing = false

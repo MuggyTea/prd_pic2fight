@@ -61,7 +61,7 @@
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
             <v-img
-            :src="original_image_obj"
+            :src="original_image_URL"
             max-height="500"
             class="grey darken-4"
           ></v-img>
@@ -80,7 +80,7 @@
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
             <v-img
-            :src="converted_image"
+            :src="converted_image_URL"
             max-height="500"
             class="grey darken-4"
           ></v-img>
@@ -178,15 +178,15 @@ export default {
   //     // mitt().on('converted_image', this.converted_image)
   // },
   props: {
-    original_image: {
-      type: File,
-      default: null
-    },
-    original_image_obj: {
+    original_image_URL: {
       type: Object,
       default: null
     },
-    converted_image: {
+    converted_image_URL: {
+      type: Object,
+      default: null
+    },
+    converted_video_URL: {
       type: Object,
       default: null
     }

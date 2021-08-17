@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
+from logging import NullHandler
 from flask import Flask, render_template, request, make_response, send_file
 from app.settings.logging_prd import logging_setting
+from app.functions.connect_firestorage import upload_bucket_file, download_bucket_file
+from app.settings.firebase import db, timestamp
 import traceback
 from app.models import img_blur
 from PIL import Image as im
@@ -10,11 +13,16 @@ import os
 import io
 import time
 import numpy as np
+import uuid
 
 app = Flask(__name__, static_folder='../dist/static', template_folder='../dist')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 logger = logging_setting('pic2fight_test')
-
+original_local_image_file = 'org.jpeg'
+converted_local_image_file = 'upload.jpeg'
+content_type_jpg = 'image/jpeg'
+content_type_mp4 = 'video/mp4'
+db_images = db.collection("UploadImages")
 
 def allow_file(file_name):
     return '.' in file_name and \
@@ -44,6 +52,13 @@ def add_header(r):
 @app.route('/convert_img', methods=['POST'])
 def output_photo():
     try:
+        # uuid発行。firestoreのidと同じにする
+        img_uuid = uuid.uuid4()
+        # img_uuid = "sample"
+        # firestorageに保存するファイル名
+        original_img_url = 'OriginalImage/'+str(img_uuid)+'.jpg'
+        converted_img_url = 'ConvertedImage/'+str(img_uuid)+'.jpg'
+        converted_video_url = 'ConvertedVideo/'+str(img_uuid)+'.mp4'
         # ファイルを受け取る
         img_file = request.files['original_image']
         logger.info('file data: {}'.format(img_file))
@@ -64,26 +79,44 @@ def output_photo():
         # オブジェクト名をディレクトリ名とし、実行ディレクトリと同じ階層にログファイル保存ディレクトリを作成
         # if os.path.exists(str("static/images/")) is not True:
         #     os.mkdir(str("static/images/"))
-        cv2.imwrite('static/result/org.jpg', input_data_img)
+        # オリジナル画像をローカルに保存
+        cv2.imwrite(original_local_image_file, input_data_img)
+        # firestorageにアップロード
+        original_storage_URL = upload_bucket_file(original_local_image_file, original_img_url, content_type_jpg, logger)
+        logger.info('original image upload for firestorage URL: {0}, filename: {1}'.format(original_storage_URL, original_local_image_file))
         # cv2.imwrite('orig.jpg', input_data_img)
         # 放射ブラーした画像を返す。引数は元画像・ぼかしの中心座標(x, y)
         output_img = img_blur(f, [0, 0], logger)
         # ファイルをローカルに保存
+        cv2.imwrite(converted_local_image_file, output_img)
         logger.info('blur output image: {0}, type {1}'.format(output_img, type(output_img)))
+        # firestorageにアップロード
+        converted_img_storage_URL = upload_bucket_file(converted_local_image_file, converted_img_url, content_type_jpg, logger)
+        logger.info('converted image upload for firestorage URL: {0}, filename: {1}'.format(converted_img_storage_URL, converted_local_image_file))
+        converted_video_storage_URL = ""
+        # データベースに登録
+        db_images.document(str(img_uuid)).set(
+            {
+                "id": str(img_uuid),
+                "original_image_URL": original_storage_URL,
+                "converted_image_URL": converted_img_storage_URL,
+                "converted_video_URL": converted_video_storage_URL,
+                "created_at": str(time.strftime('%Y/%m/%d %H:%M:%S')),
+                "timestamp": timestamp
+            }
+        )
         # logger.info('blur output arr: {0}, type {1}'.format(output_arr, type(output_arr)))
         # output_img.save('static/images/upload.jpg')
         # レスポンスデータを作る
         # res_img = make_response()
         res_img = make_response()
-        original_img_url = 'static/result/org.jpg'
-        blur_img_url = 'static/result/upload.jpg'
         # 放射ブラーした画像
         # res_img.data = output_img
         # ヘッダー情報追加
         # res_img.headers.set('Content-Disposition', 'attachment', filename='static/images/upload.jpg')
         # res_img.headers['Contet-Type'] = 'Image'
         logger.info('done')
-        converted_img_dic = {"original_img": original_img_url, "converted_img": blur_img_url}
+        converted_img_dic = {"original_img": original_storage_URL, "converted_img": converted_img_storage_URL, "URI": img_uuid}
         # 画像を返す
         return converted_img_dic
     except Exception as e:
