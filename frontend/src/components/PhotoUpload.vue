@@ -26,7 +26,7 @@
             style="display: none"
             ref="image"
             accept="image/*"
-            @change="onFilePicked"
+            multiple @change="onFilePicked"
             />
             </v-btn>
             </v-card-actions>
@@ -90,39 +90,73 @@ export default {
     pickFile () {
       this.$refs.image.click()
     },
-    onFilePicked (event) {
+    onFilePicked (e) {
+      const THUMBNAIL_WIDTH = 500; // 画像リサイズ後の横の長さの最大値
+      const THUMBNAIL_HEIGHT = 500; // 画像リサイズ後の縦の長さの最大値
       // フォームでファイルが選択されたら実行される
-      console.log(event.target.files)
-      if (event.target.files.length === 0) {
-        console.log(event.target.files.length)
+      console.log(e.target.files)
+      if (e.target.files.length === 0) {
+        console.log(e.target.files.length)
         return false
       }
       // ファイルが画像でなかったら処理中断
-      if (!event.target.files[0].type.match('image/*')) {
-        console.log(event.target.files[0].type)
+      if (!e.target.files[0].type.match('image/*')) {
+        console.log(e.target.files[0].type)
         return false
       }
       // ファイルリーダーを立ち上げる
-      const reader = new FileReader()
-      reader.readAsDataURL(event.target.files[0])
+      var reader = new FileReader()
+      var image = new Image()
+      reader.readAsDataURL(e.target.files[0])
       reader.addEventListener('load', () => {
         this.imageURL = reader.result
-        this.imageFile = event.target.files[0]
-        this.imageName = event.target.files[0].name
+        this.imageFile = e.target.files[0]
+        this.imageName = e.target.files[0].name
         console.log(this.preview)
         // this.uploadPhoto()
       })
       // 画像が読み込まれたタイミングで実行される
-      reader.onload = e => {
+      reader.onload = (e) => {
         // previewに読み込み結果（データURL）を代入する
         // previewに値が入ると<output>につけたv-ifがtrueと判定される
         // また、<output>内部の<img>のsrc属性はpreviewの値を参照しているので、結果として画像が表示される
         this.preview = e.target.result
         console.log(this.preview)
+        console.log("イメージ"+image)
+        this.$refs.image.onload = () => {
+          console.log("イメージだよ"+image)
+          var width, height, ratio
+          // 横長画像だったら横長に合わせる
+          if(image.width > image.height) {
+            // 縦横比を計算
+            ratio = image.height/image.width
+            // 縦横を決める
+            width = THUMBNAIL_WIDTH
+            height = THUMBNAIL_HEIGHT * ratio
+          } else {
+            ratio = image.width/image.height
+            width = THUMBNAIL_WIDTH * ratio
+            height = THUMBNAIL_HEIGHT
+          }
+          // サムネ描画用canvasのサイズを算出した値に変更
+          let canvas = document.createElement('canvas')
+          canvas.width = width
+          canvas.height = height
+          let ctx = canvas.getContext('2d')
+          ctx.drawImage(image, 0, 0, width. height)
+          // 縮小した画像を送信
+          ctx.canvas.toBlob((blob) => {
+            this.imageFile = new File([blob], e.target.files[0].name,
+            {
+              type: e.target.files[0].type,
+              lastModified: Date.now()
+            })
+          }, e.target.files[0].type, 1)
+        }
       }
       // ファイルを読み込む
       // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
-      reader.readAsDataURL(event.target.files[0])
+      // reader.readAsDataURL(event.target.files[0])
     },
     // 画像アップロード処理
     // uploadPhoto () {
