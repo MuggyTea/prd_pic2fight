@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*
 from flask import Flask, render_template, request, make_response, send_file
+from flask_cors import CORS, cross_origin
 from backend.app.settings.logging_prd import logging_setting
 from backend.app.settings.firebase import db, timestamp
 from backend.app.func.connect_firestorage import upload_bucket_file, download_bucket_file
@@ -13,8 +14,10 @@ import io
 import time
 import numpy as np
 import uuid
+import json
 
 app = Flask(__name__, static_folder='dist/static', template_folder='dist')
+CORS(app, support_credentials=True)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 logger = logging_setting('/tmp')
 original_local_image_file = '/tmp/org.jpeg'
@@ -33,6 +36,11 @@ def allow_file(file_name):
 def index():
     return render_template('index.html')
 
+# @app.route("/")
+# @app.route('/index')
+# def index():
+#     return "hello world"
+
 
 @app.after_request
 def add_header(r):
@@ -44,11 +52,15 @@ def add_header(r):
     r.headers["Pragma"] = "no-cache"
     r.headers["Expires"] = "0"
     r.headers['Cache-Control'] = 'public, max-age=0'
+    # r.headers.add('Access-Control-Allow-Origin', 'https://pit2force.net')
+    r.headers.add('Access-Control-Allow-Headers', 'Authorization,X-Requested-With, Origin, X-Csrftoken, Content-Type, Accept')
+    r.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     return r
 
 
 # 画像to放射ブラー画像
 @app.route('/convert_img', methods=['POST'])
+@cross_origin(support_credential=True)
 def output_photo():
     try:
         # uuid発行。firestoreのidと同じにする
@@ -114,10 +126,10 @@ def output_photo():
         # ヘッダー情報追加
         # res_img.headers.set('Content-Disposition', 'attachment', filename='static/images/upload.jpg')
         # res_img.headers['Contet-Type'] = 'Image'
-        logger.info('done')
-        converted_img_dic = {"original_img": original_storage_URL, "converted_img": converted_img_storage_URL, "URI": img_uuid}
+        converted_img_dic = {"original_img": original_storage_URL, "converted_img": converted_img_storage_URL, "URI": str(img_uuid)}
+        logger.info('done: {}'.format(json.dumps(converted_img_dic, ensure_ascii=False)))
         # 画像を返す
-        return converted_img_dic
+        return json.dumps(converted_img_dic, ensure_ascii=False)
     except Exception as e:
         logger.error(traceback.format_exc())
         return str(e)

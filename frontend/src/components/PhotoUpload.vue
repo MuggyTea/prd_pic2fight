@@ -165,7 +165,8 @@ export default {
       //   config
       // )
       axios.post(
-        "/convert_img",
+        CONSTANT.API_URL+"/convert_img",
+        // "/convert_img",
         formData,
         config
       )
@@ -197,7 +198,7 @@ export default {
                 return data
               }]
               }).then(() => {
-              window.location.reload()
+              // window.location.reload()
           }).catch(err => {
             console.log("error: ", err)
           })

@@ -252,7 +252,7 @@ export default {
     createTweetUrl () {
       // Twitter用のurl作成
       const url = encodeURIComponent(location.href)
-      const generatedText = encodeURI(this.generatedTweet + "\n\n")
+      // const generatedText = encodeURI(this.generatedTweet + "\n\n")
       // ハッシュタグを付けないにチェックボックスが入っていたら、ハッシュタグを付けない
       // if (this.ishashtag == true) {
       //   this.tweetUrl = "https://twitter.com/intent/tweet?text=" + generatedText + "&url=" + url

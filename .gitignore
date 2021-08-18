@@ -145,3 +145,6 @@ firestore.rules
 storage.rules
 .firebase
 app.yaml
+frontend/cors.json
+firebase.json
+frontend/package.json
