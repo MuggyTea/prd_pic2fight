@@ -60,12 +60,10 @@
       <v-row justify="center">
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
-            <v-img
+            <img
             :src="original_image_URL"
-            class="grey darken-4"
-            max-width="500px"
-            max-height="500px"
-          ></v-img>
+            class="grey darken-4 setting__image"
+          >
           <v-card-title>
             Before
           </v-card-title>
@@ -80,12 +78,10 @@
       <v-row justify="center">
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
-            <v-img
-            max-width="500px"
-            max-height="500px"
+            <img
             :src="converted_image_URL"
-            class="grey darken-4"
-          ></v-img>
+            class="grey darken-4 setting__image"
+          >
           <v-card-title>
             After Image
           </v-card-title>
@@ -367,5 +363,9 @@ export default {
 .checkbox__tweetgenerate {
   font-size: 16px;
   text-align: left;
+}
+.setting__image {
+  -webkit-touch-callout: default;
+  max-width: inherit;
 }
 </style>

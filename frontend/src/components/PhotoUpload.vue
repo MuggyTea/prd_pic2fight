@@ -104,8 +104,8 @@ export default {
         this.reset()
         return false
       }
-    const THUMBNAIL_WIDTH = 320; // 画像リサイズ後の横の長さの最大値
-    const THUMBNAIL_HEIGHT = 320; // 画像リサイズ後の縦の長さの最大値
+    const THUMBNAIL_WIDTH = 600; // 画像リサイズ後の横の長さの最大値
+    const THUMBNAIL_HEIGHT = 600; // 画像リサイズ後の縦の長さの最大値
     // 画像をリサイズする
     var image = new Image();
     var reader = new FileReader();
@@ -118,30 +118,43 @@ export default {
       image.src = e.target.result;
       image.onload = () => {
         console.log("イメージが読み込まれたよ")
-        var width, height;
+        let width = image.width
+        let height = image.height
+        console.log(width)
+        console.log(height)
         if(image.width > image.height){
+          console.log("横長画像")
           // 横長の画像は横のサイズを指定値にあわせる
-          var ratio_w = image.height/image.width;
+          // var ratio_w = image.height/image.width;
+          var ratio_w = THUMBNAIL_WIDTH/width;
           width = THUMBNAIL_WIDTH;
-          height = THUMBNAIL_WIDTH * ratio_w;
+          // height = THUMBNAIL_WIDTH * ratio_w;
+          height = Math.round(height * ratio_w);
+          console.log(width)
+          console.log(height)
         } else {
+          console.log("縦長画像")
           // 縦長の画像は縦のサイズを指定値にあわせる
-          var ratio_h = image.width/image.height;
-          width = THUMBNAIL_HEIGHT * ratio_h;
+          var ratio_h = THUMBNAIL_HEIGHT/height;
+          // var ratio_h = image.width/image.height;
+          // width = THUMBNAIL_HEIGHT * ratio_h;
+          width = Math.round(width * ratio_h);
           height = THUMBNAIL_HEIGHT;
+          console.log(width)
+          console.log(height)
         }
         // width = THUMBNAIL_WIDTH;
         // height = THUMBNAIL_WIDTH;
         // サムネ描画用canvasのサイズを上で算出した値に変更
         var canvas = document.createElement('canvas');
-        // canvas.width = width
-        // canvas.height = height
+        canvas.width = width
+        canvas.height = height
         var ctx = canvas.getContext('2d');
         // // canvasに既に描画されている画像をクリア
         // ctx.clearRect(0,0,width,height);
         // // canvasにサムネイルを描画
-        // ctx.drawImage(image,0,0,image.width,image.height,0,0,width,height);
-        ctx.drawImage(image,0,0, image.width, image.height, 0, 0, width, height);
+        ctx.drawImage(image,0,0,width,height);
+        // ctx.drawImage(image,0,0, image.width, image.height, 0, 0, width, height);
         var ctx_canvas = ctx.canvas
         console.log(event.target.files)
         console.log(event.target.files[0])
