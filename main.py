@@ -31,15 +31,15 @@ def allow_file(file_name):
         file_name.rsplit('.', 1)[1].lower() in ['png', 'jpeg', 'gif', 'jpg']
 
 
-@app.route("/")
-@app.route('/index')
-def index():
-    return render_template('index.html')
-
 # @app.route("/")
 # @app.route('/index')
 # def index():
-#     return "hello world"
+#     return render_template('index.html')
+
+@app.route("/")
+@app.route('/index')
+def index():
+    return "hello world"
 
 
 @app.after_request
@@ -52,8 +52,7 @@ def add_header(r):
     r.headers["Pragma"] = "no-cache"
     r.headers["Expires"] = "0"
     r.headers['Cache-Control'] = 'public, max-age=0'
-    # r.headers.add('Access-Control-Allow-Origin', 'https://pit2force.net')
-    r.headers.add('Access-Control-Allow-Headers', 'Authorization,X-Requested-With, Origin, X-Csrftoken, Content-Type, Accept')
+    r.headers.add('Access-Control-Allow-Headers', 'Crossdomain, Authorization,X-Requested-With, Origin, X-Csrftoken, Content-Type, Accept')
     r.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     return r
 

@@ -62,8 +62,9 @@
         <v-card class="pa-2" outlined tile>
             <v-img
             :src="original_image_URL"
-            max-height="500"
             class="grey darken-4"
+            max-width="500px"
+            max-height="500px"
           ></v-img>
           <v-card-title>
             Before
@@ -80,8 +81,9 @@
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
             <v-img
+            max-width="500px"
+            max-height="500px"
             :src="converted_image_URL"
-            max-height="500"
             class="grey darken-4"
           ></v-img>
           <v-card-title>
@@ -179,15 +181,15 @@ export default {
   // },
   props: {
     original_image_URL: {
-      type: Object,
+      type: String,
       default: null
     },
     converted_image_URL: {
-      type: Object,
+      type: String,
       default: null
     },
     converted_video_URL: {
-      type: Object,
+      type: String,
       default: null
     }
   },

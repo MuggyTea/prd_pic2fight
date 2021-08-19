@@ -90,92 +90,105 @@ export default {
     pickFile () {
       this.$refs.image.click()
     },
-    onFilePicked (e) {
-      const THUMBNAIL_WIDTH = 500; // 画像リサイズ後の横の長さの最大値
-      const THUMBNAIL_HEIGHT = 500; // 画像リサイズ後の縦の長さの最大値
+    onFilePicked (event) {
+      let vm = this
+      this.preview = null
+      console.log(event.target.files)
       // フォームでファイルが選択されたら実行される
-      console.log(e.target.files)
-      if (e.target.files.length === 0) {
-        console.log(e.target.files.length)
+      if (event.target.files.length === 0) {
+        this.reset()
         return false
       }
       // ファイルが画像でなかったら処理中断
-      if (!e.target.files[0].type.match('image/*')) {
-        console.log(e.target.files[0].type)
+      if (!event.target.files[0].type.match('image/*')) {
+        this.reset()
         return false
       }
-      // ファイルリーダーを立ち上げる
-      var reader = new FileReader()
-      var image = new Image()
-      reader.readAsDataURL(e.target.files[0])
-      reader.addEventListener('load', () => {
-        this.imageURL = reader.result
-        this.imageFile = e.target.files[0]
-        this.imageName = e.target.files[0].name
-        console.log(this.preview)
-        // this.uploadPhoto()
-      })
-      // 画像が読み込まれたタイミングで実行される
-      reader.onload = (e) => {
-        // previewに読み込み結果（データURL）を代入する
-        // previewに値が入ると<output>につけたv-ifがtrueと判定される
-        // また、<output>内部の<img>のsrc属性はpreviewの値を参照しているので、結果として画像が表示される
-        this.preview = e.target.result
-        console.log(this.preview)
-        console.log("イメージ"+image)
-        this.$refs.image.onload = () => {
-          console.log("イメージだよ"+image)
-          var width, height, ratio
-          // 横長画像だったら横長に合わせる
-          if(image.width > image.height) {
-            // 縦横比を計算
-            ratio = image.height/image.width
-            // 縦横を決める
-            width = THUMBNAIL_WIDTH
-            height = THUMBNAIL_HEIGHT * ratio
-          } else {
-            ratio = image.width/image.height
-            width = THUMBNAIL_WIDTH * ratio
-            height = THUMBNAIL_HEIGHT
-          }
-          // サムネ描画用canvasのサイズを算出した値に変更
-          let canvas = document.createElement('canvas')
-          canvas.width = width
-          canvas.height = height
-          let ctx = canvas.getContext('2d')
-          ctx.drawImage(image, 0, 0, width. height)
-          // 縮小した画像を送信
-          ctx.canvas.toBlob((blob) => {
-            this.imageFile = new File([blob], e.target.files[0].name,
+    const THUMBNAIL_WIDTH = 320; // 画像リサイズ後の横の長さの最大値
+    const THUMBNAIL_HEIGHT = 320; // 画像リサイズ後の縦の長さの最大値
+    // 画像をリサイズする
+    var image = new Image();
+    var reader = new FileReader();
+    this.imageURL = reader.result
+    var file_info = event.target.files[0]
+    // this.imageFile = event.target.files[0]
+    this.imageName = event.target.files[0].name
+    reader.onload = e => {
+      console.log(e.target.files)
+      image.src = e.target.result;
+      image.onload = () => {
+        console.log("イメージが読み込まれたよ")
+        var width, height;
+        if(image.width > image.height){
+          // 横長の画像は横のサイズを指定値にあわせる
+          var ratio_w = image.height/image.width;
+          width = THUMBNAIL_WIDTH;
+          height = THUMBNAIL_WIDTH * ratio_w;
+        } else {
+          // 縦長の画像は縦のサイズを指定値にあわせる
+          var ratio_h = image.width/image.height;
+          width = THUMBNAIL_HEIGHT * ratio_h;
+          height = THUMBNAIL_HEIGHT;
+        }
+        // width = THUMBNAIL_WIDTH;
+        // height = THUMBNAIL_WIDTH;
+        // サムネ描画用canvasのサイズを上で算出した値に変更
+        var canvas = document.createElement('canvas');
+        // canvas.width = width
+        // canvas.height = height
+        var ctx = canvas.getContext('2d');
+        // // canvasに既に描画されている画像をクリア
+        // ctx.clearRect(0,0,width,height);
+        // // canvasにサムネイルを描画
+        // ctx.drawImage(image,0,0,image.width,image.height,0,0,width,height);
+        ctx.drawImage(image,0,0, image.width, image.height, 0, 0, width, height);
+        var ctx_canvas = ctx.canvas
+        console.log(event.target.files)
+        console.log(event.target.files[0])
+        console.log(file_info)
+        // ファイルをリサイズする
+        var resizeCanvasBlob = this.GetCanvasBlob(ctx_canvas, file_info)
+        resizeCanvasBlob.then((blob) => {
+          console.log(blob)
+          // 外でも使えるようにする
+          vm.imageFile = blob
+          console.log(this.imageFile)
+        }, function(err){
+          console.log(err)
+        })
+      }
+      console.log(this.imageFile)
+      // previewに読み込み結果（データURL）を代入する
+      // previewに値が入ると<output>につけたv-ifがtrueと判定される
+      // また、<output>内部の<img>のsrc属性はpreviewの値を参照しているので、結果として画像が表示される
+      this.preview = e.target.result
+      // this.canvas = e.target.result
+      // this.imageFile = event.target.files[0]
+      this.imageName = event.target.files[0].name
+      console.log(this.imageFile)
+    }
+    // ファイルを読み込む
+    // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
+    reader.readAsDataURL(event.target.files[0])
+    },
+    GetCanvasBlob(ctx_canvas, file_info) {
+      return new Promise(function(resolve, reject) {
+        ctx_canvas.toBlob((blob) => {
+            var smallImage = new File([blob], file_info.name,
             {
-              type: e.target.files[0].type,
+              type: file_info.type,
               lastModified: Date.now()
             })
-          }, e.target.files[0].type, 1)
-        }
-      }
-      // ファイルを読み込む
-      // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
-      // reader.readAsDataURL(event.target.files[0])
+            console.log(smallImage)
+            // this.imageFile = smallImage
+            // this.imageFile.push(smallImage)
+            // console.log(this.imageFile
+            resolve(smallImage)
+            console.log(resolve(smallImage))
+            console.log(reject)
+        }, file_info.type, 1)
+      })
     },
-    // 画像アップロード処理
-    // uploadPhoto () {
-    //   // ストレージオブジェクト作成
-    //   const storageRef = firebase.storage().ref()
-    //   // ファイルパス設定
-    //   // eslint-disable-next-line no-template-curly-in-string
-    //   const mountainRef = storageRef.child('originalImage/' + this.imageFile.name)
-    //   // ファイルを適用してファイルアップロード
-    //   mountainRef.put(this.imageFile).then(snapshot => {
-    //     snapshot.ref.getDownloadURL().then(downloadURL => {
-    //       this.imageURL = downloadURL
-    //       console.log(this.imageURL)
-    //       firestore.collection('Images').add({
-    //         'originalPhotoURL': downloadURL
-    //       })
-    //     })
-    //   })
-    // },
     ConvertPhoto () {
       if (this.processing) return
       this.processing = true
@@ -184,10 +197,13 @@ export default {
       // this.mitt().emit('original_image', this.imageFile)
       let config = {
         headers: {
-            'content-type': 'multipart/form-data'
+            'content-type': 'multipart/form-data',
+            'X-Requested-With': 'XMLHttpRequest',
+            'crossDomain': true
         }
       };
       // FormData を利用して File を POST する
+      console.log(this.imageFile)
       let formData = new FormData();
       formData.append('original_image', this.imageFile);
       // POST送信する
@@ -217,6 +233,7 @@ export default {
           console.log("生成結果URL"+ this.converted_image_storageURL)
         })
         .catch(error => {
+          console.log(error)
           this.processing = false
           this.generatedTweet = "ツイート生成に失敗しました。もう一度試してみてください"
           axios.post(
