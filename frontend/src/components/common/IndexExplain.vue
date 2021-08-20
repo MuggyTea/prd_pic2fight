@@ -10,7 +10,7 @@
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
             <v-img
-            src="../../../public/static/exsample/sample_original_image.png"
+            src="../../../public/static/exsample/sample_original_image.jpg"
             max-height="500"
             class="grey darken-4"
           ></v-img>
@@ -25,7 +25,7 @@
       <v-col md="10">
         <v-card class="pa-2" outlined tile>
             <v-img
-            src="../../../public/static/exsample/sample_converted_image.png"
+            src="../../../public/static/exsample/sample_converted_image.jpg"
             max-height="500"
             class="grey darken-4"
           ></v-img>

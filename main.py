@@ -31,15 +31,15 @@ def allow_file(file_name):
         file_name.rsplit('.', 1)[1].lower() in ['png', 'jpeg', 'gif', 'jpg']
 
 
-# @app.route("/")
-# @app.route('/index')
-# def index():
-#     return render_template('index.html')
-
 @app.route("/")
 @app.route('/index')
 def index():
-    return "hello world"
+    return render_template('index.html')
+
+# @app.route("/")
+# @app.route('/index')
+# def index():
+#     return "hello world"
 
 
 @app.after_request

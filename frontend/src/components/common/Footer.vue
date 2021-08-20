@@ -32,7 +32,7 @@
           text
           rounded
           class="footer__col1"
-          href="https://forms.gle/euY2WbdRziXjFSUk9"
+          href="https://forms.gle/zG3jCmreqyxUFbnX8"
         >
           お問い合わせ
         </v-btn>
@@ -44,8 +44,19 @@
     >
       <Login />
     </v-btn> -->
-        <v-col class="amber lighten-5 py-4 text-center grey--text" cols="12">
-          {{ new Date().getFullYear() }} --
+        <v-col class="amber lighten-5 py-1 text-center grey--text" cols="12">
+          <v-btn
+          color="grey"
+          text
+          rounded
+          class="footer__col1"
+          href="https://twitter.com/MuggyTeaa"
+        >
+          Author: むぎちゃ/ MuggyTea
+        </v-btn>
+        </v-col>
+        <v-col class="amber lighten-5 py-1 text-center grey--text" cols="12">
+          2021/8 - {{ new Date().getFullYear() }} --
           <strong>Copyright 画像に勢いをつけるメーカー</strong>
         </v-col>
       </v-row>

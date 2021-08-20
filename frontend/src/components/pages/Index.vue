@@ -22,6 +22,7 @@
       </div> -->
     <photo-upload />
     <index-explain></index-explain>
+    <!-- <ranking/> -->
   </div>
 </template>
 
@@ -29,6 +30,7 @@
 // import Login from '../common/Login'
 // import GenerateTweetButton from '../GenerateTweetButton'
 import IndexExplain from "../common/IndexExplain";
+// import Ranking from '../common/Ranking.vue';
 import PhotoUpload from '../PhotoUpload';
 // import SetFunction from "../SetFunction"
 // import TwitterTimeLine from '../common/TwitterTimeLine'
@@ -48,7 +50,8 @@ export default {
     // 'generate-tweet-button': GenerateTweetButton,
     "index-explain": IndexExplain,
     // "set-function": SetFunction,
-    "photo-upload": PhotoUpload
+    "photo-upload": PhotoUpload,
+    // Ranking
     // 'twitter-time-line': TwitterTimeLine,
     // 'select-getenrate-user': SelectGenerateUser
   },

@@ -1,7 +1,7 @@
 <template>
-    <div class="Page-Btn" @click="scrollTop">
-    <i class="fas fa-chevron-up Page-Btn-Icon"></i>
-    </div>
+    <v-row @click="scrollTop">
+    <font-awesome-icon class="Page-Btn-Icon Page-Btn" :icon="['fas', 'chevron-up']"></font-awesome-icon>
+    </v-row>
 </template>
 
 <script>
@@ -21,10 +21,10 @@ export default {
 <style lang="scss" scoped>
 .Page-Btn{
   position: fixed;
-  right: 14px;
-  bottom: 14px;
-  width: 32px;
-  height: 32px;
+  right: 30px;
+  bottom: 40px;
+  width: 40px;
+  height: 40px;
   line-height: 32px;
   text-align: center;
   border-radius: 50%;

@@ -20,7 +20,8 @@ def img_blur(src, pos, logger, ratio=0.9, iterations=20, margin=1.3):
     nparr = np.fromstring(src, np.uint8)
     src = cv2.imdecode(nparr, cv2.IMREAD_COLOR).astype(np.float32)
     del nparr
-    h, w = src.shape[0:2]
+    # h, w = src.shape[0:2]
+    h, w , _= src.shape
     n = iterations
     m = margin
 
@@ -34,8 +35,10 @@ def img_blur(src, pos, logger, ratio=0.9, iterations=20, margin=1.3):
     image_list = []
     h *= m
     w *= m
-    c_x = pos[0] * m
-    c_y = pos[1] * m
+    # c_x = pos[0] * m
+    # c_y = pos[1] * m
+    c_x = w/2
+    c_y = h/2
 
     # 縮小画像の作成
     for i in range(n):
