@@ -6,7 +6,7 @@ from backend.app.settings.logging_prd import logging_setting
 from backend.app.settings.firebase import db, timestamp
 from backend.app.func.connect_firestorage import upload_bucket_file, download_bucket_file
 import traceback
-from backend.app.models import img_blur
+from backend.app.models import img_blur, pic2mp4
 from PIL import Image as im
 import cv2
 import os
@@ -15,13 +15,18 @@ import time
 import numpy as np
 import uuid
 import json
+import argparse
+import ffmpeg
 
 app = Flask(__name__, static_folder='dist/static', template_folder='dist')
 CORS(app, support_credentials=True)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 logger = logging_setting('/tmp')
-original_local_image_file = '/tmp/org.jpeg'
-converted_local_image_file = '/tmp/upload.jpeg'
+original_local_image_file = 'tmp/org0.jpg'
+original_local_image_file_variable = 'tmp/org'
+converted_local_image_file = 'tmp/upload0.jpg'
+converted_local_image_file_variable = 'tmp/upload'
+converted_local_mp4_file = 'tmp/upload_video.mp4'
 content_type_jpg = 'image/jpeg'
 content_type_mp4 = 'video/mp4'
 db_images = db.collection("UploadImages")
@@ -66,9 +71,11 @@ def output_photo():
         img_uuid = uuid.uuid4()
         # img_uuid = "sample"
         # firestorageに保存するファイル名
-        original_img_url = 'OriginalImage/'+str(img_uuid)+'.jpg'
-        converted_img_url = 'ConvertedImage/'+str(img_uuid)+'.jpg'
-        converted_video_url = 'ConvertedVideo/'+str(img_uuid)+'.mp4'
+        original_img_url = 'OriginalImage/' +str(img_uuid)+'.jpg'
+        converted_img_url = 'ConvertedImage/' +str(img_uuid)+'.jpg'
+        converted_video_url = 'ConvertedVideo/' +str(img_uuid)+'.mp4'
+        # 動画作成用に生成した画像を入れておくリスト
+        img_list = []
         # ファイルを受け取る
         img_file = request.files['original_image']
         logger.info('file data: {}'.format(img_file))
@@ -83,27 +90,47 @@ def output_photo():
         bin_data = io.BytesIO(f)
         file_bytes = np.asarray(bytearray(bin_data.read()), dtype=np.uint8)
         input_data_img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-        # BGRをRGBに変換
-        # dst_img = cv2.cvtColor(img_file, cv2.COLOR_BGR2RGB)
-        # ファイルをローカルに保存
-        # オブジェクト名をディレクトリ名とし、実行ディレクトリと同じ階層にログファイル保存ディレクトリを作成
-        # if os.path.exists(str("static/images/")) is not True:
-        #     os.mkdir(str("static/images/"))
-        # オリジナル画像をローカルに保存
-        cv2.imwrite(original_local_image_file, input_data_img)
+        # オリジナル画像２つ作り、ローカルに保存
+        for i in range(2):
+            # ローカルに保存
+            cv2.imwrite(original_local_image_file_variable+str(i)+".jpg", input_data_img)
+            # リストに格納
+            img_list.append(original_local_image_file_variable+str(i)+".jpg")
+        # 一枚目をストレージにあげる
+        original_local_image_file = original_local_image_file_variable + str(i) + ".jpg"
         # firestorageにアップロード
         original_storage_URL = upload_bucket_file(original_local_image_file, original_img_url, content_type_jpg, logger)
         logger.info('original image upload for firestorage URL: {0}, filename: {1}'.format(original_storage_URL, original_local_image_file))
         # cv2.imwrite('orig.jpg', input_data_img)
-        # 放射ブラーした画像を返す。引数は元画像・ぼかしの中心座標(x, y)
-        output_img = img_blur(f, [0, 0], logger)
+        # 放射ブラーした画像を返す。引数は元画像・ぼかしの中心座標(x, y)から何px動かすか
+        output_img, image_h, image_w = img_blur(f, [0, 0],logger, iterations=10)
         # ファイルをローカルに保存
         cv2.imwrite(converted_local_image_file, output_img)
         logger.info('blur output image: {0}, type {1}'.format(output_img, type(output_img)))
         # firestorageにアップロード
         converted_img_storage_URL = upload_bucket_file(converted_local_image_file, converted_img_url, content_type_jpg, logger)
         logger.info('converted image upload for firestorage URL: {0}, filename: {1}'.format(converted_img_storage_URL, converted_local_image_file))
-        converted_video_storage_URL = ""
+        # 動画を作る
+        for i in range(10):
+            logger.info("ready to convert image {}, {} ".format(i, converted_local_image_file_variable + str(i) + ".jpg"))
+            # ファイルの読み込み
+            file = converted_local_image_file_variable + str(i) + ".jpg"
+            output_file = converted_local_image_file_variable + str(i+1) + ".jpg"
+            f = cv2.imread(file)
+            logger.info("read image {0}, type {1}".format(f, type(f)))
+            # 等倍にブラーをかけた画像を10枚作る
+            # output_img = img_blur(converted_local_image_file_variable + str(i) + ".jpg", [0, 0],logger, iterations=10)
+            output_img, image_h, image_w = img_blur(f, [0, 0],logger, iterations=10)
+            # ファイルをローカルに保存
+            cv2.imwrite(output_file, output_img)
+            # リストに格納
+            img_list.append(output_file)
+            logger.info(img_list)
+        # 動画を作る
+        output_video = pic2mp4(pic_list=img_list, video_name=converted_local_mp4_file, logger=logger, img_size_y=image_h, img_size_x=image_w)
+        # firestorageにアップロード
+        converted_video_storage_URL = upload_bucket_file(converted_local_mp4_file, converted_video_url, content_type_mp4, logger)
+        logger.info('converted video upload for firestorage URL: {0}, filename: {1}'.format(converted_video_storage_URL, converted_local_mp4_file))
         # データベースに登録
         db_images.document(str(img_uuid)).set(
             {
@@ -125,7 +152,7 @@ def output_photo():
         # ヘッダー情報追加
         # res_img.headers.set('Content-Disposition', 'attachment', filename='static/images/upload.jpg')
         # res_img.headers['Contet-Type'] = 'Image'
-        converted_img_dic = {"original_img": original_storage_URL, "converted_img": converted_img_storage_URL, "URI": str(img_uuid)}
+        converted_img_dic = {"original_img": original_storage_URL, "converted_img": converted_img_storage_URL, "converted_video": converted_video_storage_URL,"URI": str(img_uuid)}
         logger.info('done: {}'.format(json.dumps(converted_img_dic, ensure_ascii=False)))
         # 画像を返す
         return json.dumps(converted_img_dic, ensure_ascii=False)

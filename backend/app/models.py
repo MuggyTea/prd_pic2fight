@@ -3,6 +3,7 @@
 """
 モデル(関数、クラス、フィールド、メソッドなど)を定義する。
 """
+from typing import Sized
 import numpy as np
 import cv2
 import random
@@ -12,14 +13,22 @@ import io
 import time
 
 
-def img_blur(src, pos, logger, ratio=0.9, iterations=20, margin=1.3):
+def img_blur(src, pos, logger, ratio=0.9, iterations=20, margin=1):
     """
     放射ブラー効果をつけた画像を生成する関数
     """
-    # バイナリデータをnumpyの形に変形する
-    nparr = np.fromstring(src, np.uint8)
-    src = cv2.imdecode(nparr, cv2.IMREAD_COLOR).astype(np.float32)
-    del nparr
+    # logger.info("start to blur: {}".format(src))
+    if (type(src) == bytes):
+        logger.info("src file type may be byte {} ".format(type(src)))
+        # バイナリデータをnumpyの形に変形する
+        nparr = np.fromstring(src, np.uint8)
+        src = cv2.imdecode(nparr, cv2.IMREAD_COLOR).astype(np.float32)
+        del nparr
+    else:
+        logger.info("src file type may be numpy.ndarray {} ".format(type(src)))
+    # logger.info("blur src to narray: {}".format(nparr))
+    # src = cv2.imdecode(nparr, cv2.IMREAD_COLOR).astype(np.float32)
+    # del nparr
     # h, w = src.shape[0:2]
     h, w , _= src.shape
     n = iterations
@@ -68,4 +77,27 @@ def img_blur(src, pos, logger, ratio=0.9, iterations=20, margin=1.3):
     #BGRをRGBに変換.
     # dst_img = cv2.cvtColor(dst, cv2.COLOR_BGR2RGB)
     # cv2.imwrite('upload.jpg', dst)
-    return dst
+    return dst, h, w
+
+
+def pic2mp4(pic_list, video_name, logger, img_size_y=256, img_size_x=256):
+    """
+    複数枚の画像から動画を作成する関数
+    """
+    # 動画作成の準備
+    logger.info("frame size x {0}, y {1}".format(img_size_x, img_size_y))
+    fourcc = cv2.VideoWriter_fourcc('M','P','4', 'V')
+    video = cv2.VideoWriter(video_name, fourcc, 6.0, (int(img_size_x), int(img_size_y)))
+
+    # 画像のリストを一枚ずつ読み込む
+    for i, pic in enumerate(pic_list):
+        logger.info("{} 枚目".format(i))
+        logger.info("画像パス {}".format(pic))
+        img = cv2.imread(pic)
+        logger.info("画像を変換 {}".format(img))
+        # 動画に書き込む
+        video.write(img)
+    # 出力
+    video.release()
+    # ビデオを返す
+    return video

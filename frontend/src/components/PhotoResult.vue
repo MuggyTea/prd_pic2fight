@@ -129,8 +129,15 @@
             :loading="processing"
             >
               <font-awesome-icon :icon="['fab', 'twitter']"></font-awesome-icon>
-              TwitterにShare
             </v-btn>
+            <a :href="converted_video" :download="converted_video">
+              <v-btn
+              class="light-blue darken-1 text-center white--text"
+              >
+              <!-- <font-awesome-icon :icon="['fab', 'twitter']"></font-awesome-icon> -->
+                動画をダウンロード
+                </v-btn>
+                </a>
             </v-card-actions>
         </v-card>
       </v-col>
