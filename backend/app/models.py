@@ -86,18 +86,17 @@ def pic2mp4(pic_list, video_name, logger, img_size_y=256, img_size_x=256):
     """
     # 動画作成の準備
     logger.info("frame size x {0}, y {1}".format(img_size_x, img_size_y))
-    fourcc = cv2.VideoWriter_fourcc('M','P','4', 'V')
+    fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V')
     video = cv2.VideoWriter(video_name, fourcc, 6.0, (int(img_size_x), int(img_size_y)))
 
     # 画像のリストを一枚ずつ読み込む
     for i, pic in enumerate(pic_list):
-        logger.info("{} 枚目".format(i))
-        logger.info("画像パス {}".format(pic))
+        # logger.info("{} 枚目".format(i))
+        # logger.info("画像パス {}".format(pic))
         img = cv2.imread(pic)
-        logger.info("画像を変換 {}".format(img))
+        # logger.info("画像を変換 {}".format(img))
         # 動画に書き込む
         video.write(img)
     # 出力
     video.release()
-    # ビデオを返す
     return video

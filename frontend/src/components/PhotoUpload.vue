@@ -228,8 +228,8 @@ export default {
       //   config
       // )
       axios.post(
-        // CONSTANT.API_URL+"/convert_img",
-        "/convert_img",
+        CONSTANT.API_URL+"/convert_img",
+        // "/convert_img",
         formData,
         config
       )
@@ -244,7 +244,8 @@ export default {
           this.processing = false
           // this.mitt().emit('converted_image', this.converted_image)
           console.log("firestorageに入れたオリジナルイメージURL"+ this.original_image_storageURL)
-          console.log("生成結果URL"+ this.converted_image_storageURL)
+          console.log("生成結果URL　"+ this.converted_image_storageURL)
+          console.log("ビデオの生成結果URL　"+ this.converted_video_storageURL)
         })
         .catch(error => {
           console.log(error)

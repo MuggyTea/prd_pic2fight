@@ -72,11 +72,6 @@
       </v-row>
       <v-row justify="center">
       <v-col md="10">
-        <h2>こうなります</h2>
-      </v-col>
-      </v-row>
-      <v-row justify="center">
-      <v-col md="10">
         <v-card class="pa-2" outlined tile>
             <img
             :src="converted_image_URL"
@@ -93,7 +88,6 @@
          :loading="processing"
          >
            <font-awesome-icon :icon="['fab', 'twitter']"></font-awesome-icon>
-           TwitterにShare
          </v-btn>
         </v-card-actions>
         </v-card>
@@ -108,14 +102,13 @@
             class="grey darken-4"
           ></v-img> -->
           <video
-          max-height="500"
+          class="setting__image"
           controls
           autoplay muted playsinline
-          :src="converted_video"
+          :src="converted_video_URL"
           >
             <!-- <source
-            src="../../../public/static/exsample/sample_video.mp4"
-            type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+            type='video/mov; codecs="avc1.42E01E, mp4a.40.2"'
             > -->
           </video>
           <v-card-title>
@@ -130,7 +123,8 @@
             >
               <font-awesome-icon :icon="['fab', 'twitter']"></font-awesome-icon>
             </v-btn>
-            <a :href="converted_video" :download="converted_video">
+            <v-spacer></v-spacer>
+            <a :href="converted_video_URL" :download="converted_video_URL">
               <v-btn
               class="light-blue darken-1 text-center white--text"
               >

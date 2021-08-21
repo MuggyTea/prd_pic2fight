@@ -22,13 +22,13 @@ app = Flask(__name__, static_folder='dist/static', template_folder='dist')
 CORS(app, support_credentials=True)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 logger = logging_setting('/tmp')
-original_local_image_file = 'tmp/org0.jpg'
-original_local_image_file_variable = 'tmp/org'
-converted_local_image_file = 'tmp/upload0.jpg'
-converted_local_image_file_variable = 'tmp/upload'
-converted_local_mp4_file = 'tmp/upload_video.mp4'
+original_local_image_file = '/tmp/org0.jpg'
+original_local_image_file_variable = '/tmp/org'
+converted_local_image_file = '/tmp/upload0.jpg'
+converted_local_image_file_variable = '/tmp/upload'
+converted_local_mp4_file = '/tmp/upload_video.mp4'
 content_type_jpg = 'image/jpeg'
-content_type_mp4 = 'video/mp4'
+content_type_mp4 = 'video/mov'
 db_images = db.collection("UploadImages")
 
 def allow_file(file_name):
@@ -36,15 +36,15 @@ def allow_file(file_name):
         file_name.rsplit('.', 1)[1].lower() in ['png', 'jpeg', 'gif', 'jpg']
 
 
-@app.route("/")
-@app.route('/index')
-def index():
-    return render_template('index.html')
-
 # @app.route("/")
 # @app.route('/index')
 # def index():
-#     return "hello world"
+#     return render_template('index.html')
+
+@app.route("/")
+@app.route('/index')
+def index():
+    return "hello world"
 
 
 @app.after_request
@@ -96,12 +96,11 @@ def output_photo():
             cv2.imwrite(original_local_image_file_variable+str(i)+".jpg", input_data_img)
             # リストに格納
             img_list.append(original_local_image_file_variable+str(i)+".jpg")
-        # 一枚目をストレージにあげる
+        # 一枚ストレージにあげる
         original_local_image_file = original_local_image_file_variable + str(i) + ".jpg"
         # firestorageにアップロード
         original_storage_URL = upload_bucket_file(original_local_image_file, original_img_url, content_type_jpg, logger)
         logger.info('original image upload for firestorage URL: {0}, filename: {1}'.format(original_storage_URL, original_local_image_file))
-        # cv2.imwrite('orig.jpg', input_data_img)
         # 放射ブラーした画像を返す。引数は元画像・ぼかしの中心座標(x, y)から何px動かすか
         output_img, image_h, image_w = img_blur(f, [0, 0],logger, iterations=10)
         # ファイルをローカルに保存
@@ -110,24 +109,22 @@ def output_photo():
         # firestorageにアップロード
         converted_img_storage_URL = upload_bucket_file(converted_local_image_file, converted_img_url, content_type_jpg, logger)
         logger.info('converted image upload for firestorage URL: {0}, filename: {1}'.format(converted_img_storage_URL, converted_local_image_file))
-        # 動画を作る
+        # 動画を作るために10枚のブラー画像を作る
         for i in range(10):
-            logger.info("ready to convert image {}, {} ".format(i, converted_local_image_file_variable + str(i) + ".jpg"))
+            # logger.info("ready to convert image {}, {} ".format(i, converted_local_image_file_variable + str(i) + ".jpg"))
             # ファイルの読み込み
             file = converted_local_image_file_variable + str(i) + ".jpg"
             output_file = converted_local_image_file_variable + str(i+1) + ".jpg"
             f = cv2.imread(file)
-            logger.info("read image {0}, type {1}".format(f, type(f)))
+            # logger.info("read image {0}, type {1}".format(f, type(f)))
             # 等倍にブラーをかけた画像を10枚作る
-            # output_img = img_blur(converted_local_image_file_variable + str(i) + ".jpg", [0, 0],logger, iterations=10)
             output_img, image_h, image_w = img_blur(f, [0, 0],logger, iterations=10)
             # ファイルをローカルに保存
             cv2.imwrite(output_file, output_img)
             # リストに格納
             img_list.append(output_file)
-            logger.info(img_list)
         # 動画を作る
-        output_video = pic2mp4(pic_list=img_list, video_name=converted_local_mp4_file, logger=logger, img_size_y=image_h, img_size_x=image_w)
+        pic2mp4(pic_list=img_list, video_name=converted_local_mp4_file, logger=logger, img_size_y=image_h, img_size_x=image_w)
         # firestorageにアップロード
         converted_video_storage_URL = upload_bucket_file(converted_local_mp4_file, converted_video_url, content_type_mp4, logger)
         logger.info('converted video upload for firestorage URL: {0}, filename: {1}'.format(converted_video_storage_URL, converted_local_mp4_file))
@@ -142,16 +139,6 @@ def output_photo():
                 "timestamp": timestamp
             }
         )
-        # logger.info('blur output arr: {0}, type {1}'.format(output_arr, type(output_arr)))
-        # output_img.save('static/images/upload.jpg')
-        # レスポンスデータを作る
-        # res_img = make_response()
-        res_img = make_response()
-        # 放射ブラーした画像
-        # res_img.data = output_img
-        # ヘッダー情報追加
-        # res_img.headers.set('Content-Disposition', 'attachment', filename='static/images/upload.jpg')
-        # res_img.headers['Contet-Type'] = 'Image'
         converted_img_dic = {"original_img": original_storage_URL, "converted_img": converted_img_storage_URL, "converted_video": converted_video_storage_URL,"URI": str(img_uuid)}
         logger.info('done: {}'.format(json.dumps(converted_img_dic, ensure_ascii=False)))
         # 画像を返す
