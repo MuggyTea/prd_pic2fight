@@ -13,7 +13,7 @@ import io
 import time
 
 
-def img_blur(src, pos, logger, ratio=0.9, iterations=20, margin=1):
+def img_blur(src, selected_x_per, selected_y_per, logger, ratio=0.9, iterations=20, margin=1):
     """
     放射ブラー効果をつけた画像を生成する関数
     """
@@ -46,8 +46,11 @@ def img_blur(src, pos, logger, ratio=0.9, iterations=20, margin=1):
     w *= m
     # c_x = pos[0] * m
     # c_y = pos[1] * m
-    c_x = w/2
-    c_y = h/2
+    # c_x = w/2
+    # c_y = h/2
+    # 焦点の位置を決める
+    c_x = w * float(selected_x_per) * 0.01
+    c_y = h * float(selected_y_per) * 0.01
 
     # 縮小画像の作成
     for i in range(n):

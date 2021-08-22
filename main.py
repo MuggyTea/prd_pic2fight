@@ -77,14 +77,29 @@ def output_photo():
         # 動画作成用に生成した画像を入れておくリスト
         img_list = []
         # ファイルを受け取る
+        logger.info('file data: {}'.format(request.files))
+        logger.info('file: {}'.format(request))
         img_file = request.files['original_image']
-        logger.info('file data: {}'.format(img_file))
+        logger.info('img_file data: {}'.format(img_file))
+        blur_volume = request.files['blur_volume']
+        logger.info('blur file data: {}'.format(blur_volume))
+        selected_x_per = request.files['selected_x']
+        logger.info('selected x file data: {}'.format(selected_x_per))
+        selected_y_per = request.files['selected_y']
+        logger.info('selected y file data: {}'.format(selected_y_per))
+        # logger.info('img_file data: {}'.format(img_file))
+        # logger.info('blur file data: {}'.format(blur_volume))
+        # logger.info('selected x file data: {}'.format(selected_x_per))
+        # logger.info('selected y file data: {}'.format(selected_y_per))
         # 画像ファイル以外は弾く
-        if not allow_file(img_file.filename):
-            logger.error('error file data: {}'.format(img_file))
-            return 'file not allowed, only allow png, jpg, gif, jpeg'
+        # if not allow_file(img_file.filename):
+        #     logger.error('error file data: {}'.format(img_file))
+        #     return 'file not allowed, only allow png, jpg, gif, jpeg'
         # ファイルの読み込み
         f = img_file.read()
+        blur_volume = blur_volume.read()
+        selected_x_per = selected_x_per.read()
+        selected_y_per = selected_y_per.read()
         # BytesIOで読み込んでOpenCVで扱える型にする
         # f = img_file.stream.read()
         bin_data = io.BytesIO(f)
@@ -102,7 +117,7 @@ def output_photo():
         original_storage_URL = upload_bucket_file(original_local_image_file, original_img_url, content_type_jpg, logger)
         logger.info('original image upload for firestorage URL: {0}, filename: {1}'.format(original_storage_URL, original_local_image_file))
         # 放射ブラーした画像を返す。引数は元画像・ぼかしの中心座標(x, y)から何px動かすか
-        output_img, image_h, image_w = img_blur(f, [0, 0],logger, iterations=10)
+        output_img, image_h, image_w = img_blur(f, selected_x_per, selected_y_per, logger, ratio=float(blur_volume), iterations=10)
         # ファイルをローカルに保存
         cv2.imwrite(converted_local_image_file, output_img)
         logger.info('blur output image: {0}, type {1}'.format(output_img, type(output_img)))
@@ -118,7 +133,7 @@ def output_photo():
             f = cv2.imread(file)
             # logger.info("read image {0}, type {1}".format(f, type(f)))
             # 等倍にブラーをかけた画像を10枚作る
-            output_img, image_h, image_w = img_blur(f, [0, 0],logger, iterations=10)
+            output_img, image_h, image_w = img_blur(f, selected_x_per, selected_y_per, logger, ratio=float(blur_volume), iterations=10)
             # ファイルをローカルに保存
             cv2.imwrite(output_file, output_img)
             # リストに格納

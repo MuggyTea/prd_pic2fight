@@ -3,13 +3,14 @@
     <div class="photo-form">
         <!-- <v-flex xs12 sm8 md4> -->
         <v-card class="elevation-12">
-            <output class="form__output" v-if="preview">
+            <output id="position_base" class="form__output" v-if="preview">
                 <img
                     :src="preview"
                     alt=""
-                    max-width="200px"
-                    height="200px"
                     >
+                <h3
+                 id="pointer_position"
+                 ><strong>○</strong></h3>
             </output>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -26,9 +27,61 @@
             style="display: none"
             ref="image"
             accept="image/*"
-            multiple @change="onFilePicked"
+            @change="onFilePicked"
             />
             </v-btn>
+            </v-card-actions>
+            <div>焦点を合わせる位置を変えられます。</div>
+            <v-card-actions>
+              <v-row>
+              <v-col>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                v-model="selectedCenterX"
+                @change="pointerPositionX"
+              >横
+              {{selectedCenterX}}
+              </v-col>
+              <v-col>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                v-model="selectedCenterY"
+                @change="pointerPositionY"
+              >縦
+              {{selectedCenterY}}
+              </v-col>
+              </v-row>
+            </v-card-actions>
+            <v-card-actions>
+              勢いの強さ：
+            <input
+              type="radio"
+              name="blur"
+              v-model="makeBlurVolume"
+              value=0.95
+            />弱い 
+            <input
+              type="radio"
+              name="blur"
+              v-model="makeBlurVolume"
+              value=0.9
+            />普通 
+            <input
+              type="radio"
+              name="blur"
+              v-model="makeBlurVolume"
+              value=0.8
+            />強い 
+            <input
+              type="radio"
+              name="blur"
+              v-model="makeBlurVolume"
+              value=0.7
+            />ゲキつよ
             </v-card-actions>
         </v-card>
       <v-btn
@@ -79,7 +132,10 @@ export default {
       processing: false,
       original_image_storageURL: null,
       converted_image_storageURL: null,
-      converted_video_storageURL: null
+      converted_video_storageURL: null,
+      makeBlurVolume: 0.9,
+      selectedCenterX: 50,
+      selectedCenterY: 50
     }
   },
   // mounted() {
@@ -87,6 +143,25 @@ export default {
   //   mitt().emit('converted_image', this.converted_image)
   // },
   methods: {
+    pointerPositionX() {
+      // console.log("横に動かすよ")
+      // this.selectedCenterX = value
+      // console.log(this.selectedCenterX)
+      // pタグをゲット
+      let pointer = document.getElementById("pointer_position")
+      // console.log("pointer "+ pointer)
+      // スライダーの位置によって●を動かす
+      pointer.style.left = this.selectedCenterX + "%"
+    },
+    pointerPositionY() {
+      // console.log("縦に動かすよ")
+      // this.selectedCenterY = value
+      // pタグをゲット
+      let pointer = document.getElementById("pointer_position")
+      // console.log("pointer "+ pointer)
+      // スライダーの位置によって●を動かす
+      pointer.style.top = this.selectedCenterY + "%"
+    },
     pickFile () {
       this.$refs.image.click()
     },
@@ -186,6 +261,7 @@ export default {
     },
     GetCanvasBlob(ctx_canvas, file_info) {
       return new Promise(function(resolve, reject) {
+        console.log(ctx_canvas)
         ctx_canvas.toBlob((blob) => {
             var smallImage = new File([blob], file_info.name,
             {
@@ -202,6 +278,18 @@ export default {
         }, file_info.type, 1)
       })
     },
+    // TextToBlob(ctx_canvas, file_info, filename) {
+    //   var vm = this
+    //   var resizeCanvasBlob = vm.GetCanvasBlob(ctx_canvas, file_info)
+    //   resizeCanvasBlob.then((blob) => {
+    //     console.log(blob)
+    //     // 外でも使えるようにする
+    //     vm.filename = blob
+    //     console.log(filename)
+    //   }, function(err){
+    //     console.log(err)
+    //   })
+    // },
     ConvertPhoto () {
       if (this.processing) return
       this.processing = true
@@ -210,15 +298,40 @@ export default {
       // this.mitt().emit('original_image', this.imageFile)
       let config = {
         headers: {
-            'content-type': 'multipart/form-data',
+            'content-type': 'multipart/form-data; boundary=hogehoge',
             'X-Requested-With': 'XMLHttpRequest',
             'crossDomain': true
         }
       };
       // FormData を利用して File を POST する
       console.log(this.imageFile)
+      // テキストをBlobにする
+      const blur2Blob = new Blob([this.makeBlurVolume], {type: "text/plain"})
+      const selected_xBlob = new Blob([this.selectedCenterX], {type: "text/plain"})
+      const selected_yBlob = new Blob([this.selectedCenterY], {type: "text/plain"})
+      // this.TextToBlob(this.makeBlurVolume, {"type": "text/plane", "name": "blur_volume"}, this.makeBlurVolume)
+      // this.TextToBlob(this.selectedCenterX, {"type": "text/plane", "name": "selected_x"}, this.selectedCenterX)
+      // this.TextToBlob(this.selectedCenterY, {"type": "text/plane", "name": "selected_y"}, this.selectedCenterY)
       let formData = new FormData();
-      formData.append('original_image', this.imageFile);
+      // formData.append('original_image', this.imageFile);
+      // formData.append('blur_volume', this.makeBlurVolume);
+      // formData.append('selected_x', this.selectedCenterX);
+      // formData.append('selected_y', this.selectedCenterY);
+      // formData.append('original_image[]', this.imageFile, "original_image");
+      // // console.log(formData.getAll('original_image[]'))
+      // formData.append('original_image[]', blur2Blob, "blur_volume");
+      // // console.log(formData.getAll('original_image[]'))
+      // formData.append('original_image[]', selected_xBlob, "selected_x");
+      // // console.log(formData.getAll('original_image[]'))
+      // formData.append('original_image[]', selected_yBlob, "selected_y");
+      // console.log(formData.getAll('original_image[]'))
+      formData.append('original_image', this.imageFile, "original_image");
+      // console.log(formData.getAll('original_image[]'))
+      formData.append('blur_volume', blur2Blob, "blur_volume");
+      // console.log(formData.getAll('original_image[]'))
+      formData.append('selected_x', selected_xBlob, "selected_x");
+      // console.log(formData.getAll('original_image[]'))
+      formData.append('selected_y', selected_yBlob, "selected_y");
       // POST送信する
       // axios.post(
       //   "/convert_img",
@@ -273,3 +386,19 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.form__output {
+  position: relative;
+}
+.form__output > img{
+  max-width: 100%;
+  // height: 200px;
+}
+.form__output > h3{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  // max-width: 100%;
+  // height: 200px;
+}
+</style>
