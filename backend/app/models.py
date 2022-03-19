@@ -89,7 +89,10 @@ def pic2mp4(pic_list, video_name, logger, img_size_y=256, img_size_x=256):
     """
     # 動画作成の準備
     logger.info("frame size x {0}, y {1}".format(img_size_x, img_size_y))
-    fourcc = cv2.VideoWriter_fourcc('M', 'P', '4', 'V')
+    # fourcc = cv2.VideoWriter_fourcc(*'H264')
+    # fourcc = cv2.VideoWriter_fourcc(*'mp4s')
+    # fourcc = cv2.VideoWriter_fourcc('M','P','4','V')
+    fourcc = cv2.VideoWriter_fourcc('H','2','6','4')
     video = cv2.VideoWriter(video_name, fourcc, 6.0, (int(img_size_x), int(img_size_y)))
 
     # 画像のリストを一枚ずつ読み込む

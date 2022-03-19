@@ -17,6 +17,8 @@ import uuid
 import json
 import argparse
 import ffmpeg
+import imghdr
+import shutil
 
 app = Flask(__name__, static_folder='dist/static', template_folder='dist')
 CORS(app, support_credentials=True)
@@ -27,24 +29,37 @@ original_local_image_file_variable = '/tmp/org'
 converted_local_image_file = '/tmp/upload0.jpg'
 converted_local_image_file_variable = '/tmp/upload'
 converted_local_mp4_file = '/tmp/upload_video.mp4'
+# converted_local_mp4_file = '/tmp/upload_video.avi'
 content_type_jpg = 'image/jpeg'
-content_type_mp4 = 'video/mov'
+content_type_mp4 = 'video/mp4'
 db_images = db.collection("UploadImages")
+
 
 def allow_file(file_name):
     return '.' in file_name and \
-        file_name.rsplit('.', 1)[1].lower() in ['png', 'jpeg', 'gif', 'jpg']
+        file_name.rsplit('.', 1)[1].lower() in ['png', 'jpeg', 'jpg']
 
 
-# @app.route("/")
-# @app.route('/index')
-# def index():
-#     return render_template('index.html')
+def allow_file_type(file, logger):
+    ALLOWED_TYPES = ['image/jpeg', 'image/png']
+
+    # file_type = imghdr.what(file)
+    logger.info("this file type is {}".format(file))
+    if not str(file) in ALLOWED_TYPES:
+        logger.info("not allowed file type : {}".format(file))
+        return False
+    return True
+
 
 @app.route("/")
 @app.route('/index')
 def index():
-    return "hello world"
+    return render_template('index.html')
+
+# @app.route("/")
+# @app.route('/index')
+# def index():
+#     return "hello world"
 
 
 @app.after_request
@@ -67,6 +82,8 @@ def add_header(r):
 @cross_origin(support_credential=True)
 def output_photo():
     try:
+        if os.path.exists(converted_local_mp4_file):
+            os.remove(converted_local_mp4_file)
         # uuid発行。firestoreのidと同じにする
         img_uuid = uuid.uuid4()
         # img_uuid = "sample"
@@ -92,9 +109,10 @@ def output_photo():
         # logger.info('selected x file data: {}'.format(selected_x_per))
         # logger.info('selected y file data: {}'.format(selected_y_per))
         # 画像ファイル以外は弾く
-        # if not allow_file(img_file.filename):
-        #     logger.error('error file data: {}'.format(img_file))
-        #     return 'file not allowed, only allow png, jpg, gif, jpeg'
+        logger.info(img_file.content_type)
+        if not allow_file_type(img_file.content_type, logger):
+            logger.error('error file data: {}'.format(img_file))
+            return 'file not allowed, only allow png, jpg, jpeg'
         # ファイルの読み込み
         f = img_file.read()
         blur_volume = blur_volume.read()
@@ -195,4 +213,4 @@ def output_mp4():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", port=80)

@@ -5,12 +5,15 @@
         <v-card class="elevation-12">
             <output id="position_base" class="form__output" v-if="preview">
                 <img
+                    class="image__preview"
                     :src="preview"
                     alt=""
                     >
-                <h3
-                 id="pointer_position"
-                 ><strong>○</strong></h3>
+                  <img
+                    id="pointer_position"
+                    class = "image__pointer__position"
+                    src="../assets/ceter_position.png"
+                    alt="中心">
             </output>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -35,23 +38,25 @@
             <v-card-actions>
               <v-row>
               <v-col>
+              左
               <input
                 type="range"
                 min="0"
                 max="100"
                 v-model="selectedCenterX"
                 @change="pointerPositionX"
-              >横
+              >右
               {{selectedCenterX}}
               </v-col>
               <v-col>
+              上
               <input
                 type="range"
                 min="0"
                 max="100"
                 v-model="selectedCenterY"
                 @change="pointerPositionY"
-              >縦
+              >下
               {{selectedCenterY}}
               </v-col>
               </v-row>
@@ -326,6 +331,7 @@ export default {
       // formData.append('original_image[]', selected_yBlob, "selected_y");
       // console.log(formData.getAll('original_image[]'))
       formData.append('original_image', this.imageFile, "original_image");
+      // formData.append('original_image', this.imageFile, this.imageFile);
       // console.log(formData.getAll('original_image[]'))
       formData.append('blur_volume', blur2Blob, "blur_volume");
       // console.log(formData.getAll('original_image[]'))
@@ -390,8 +396,9 @@ export default {
 .form__output {
   position: relative;
 }
-.form__output > img{
+.form__output > .image__preview {
   max-width: 100%;
+  // position: relative;
   // height: 200px;
 }
 .form__output > h3{
@@ -401,4 +408,23 @@ export default {
   // max-width: 100%;
   // height: 200px;
 }
+.form__output > .image__pointer__position {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40%;
+  height: 40%;
+  transform: translate(-50%, -50%);
+  // max-width: 100%;
+  // height: 200px;
+}
+// .image__pointer__position {
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   width: 10px;
+//   height: 10px;
+//   // max-width: 100%;
+//   // height: 200px;
+// }
 </style>

@@ -149,3 +149,4 @@ frontend/cors.json
 firebase.json
 frontend/package.json
 tmp
+.DS_Store
