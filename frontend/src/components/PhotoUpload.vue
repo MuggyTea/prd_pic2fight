@@ -347,8 +347,8 @@ export default {
       //   config
       // )
       axios.post(
-        CONSTANT.API_URL+"/convert_img",
-        // "/convert_img",
+        // CONSTANT.API_URL+"/convert_img",
+        "/convert_img",
         formData,
         config
       )
