@@ -29,8 +29,17 @@
 # [Optional] Uncomment this line to install global node packages.
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
 
+# ##### ビルド環境 #####
+# FROM node:16.7.0-alpine as build-stage
+# WORKDIR /prd_pic2fight/frontend
+# # vue.jsのProjectをコピーする
+# COPY . .
+# RUN npm install
+# # npm run build で distファイルが生成されるscriptがpackage.jsonにある前提
+# RUN npm run build
+
 ##### Python環境
-FROM python:3.9 as python_env
+FROM python:3.9 as build-stage
 # FROM ubuntu:20.04 as ubuntu_2004
 USER root
 
@@ -125,3 +134,26 @@ COPY . .
 CMD gunicorn --bind :8080 --workers 1 --threads 8 --timeout 0 main:app --reload
 #CMD ["gunicorn"  , "-b", "0.0.0.0:8080", "app:app"]
 #CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers 1", "--threads 8", "--timeout 0", "main:app"]
+
+##### 本番環境 #####
+FROM nginx:1.13.12-alpine as nginx
+
+# contentsを配置するディレクトリを作成する
+WORKDIR /prd_pic2fight
+COPY --from=build-stage ./prd_pic2fight/frontend/nginx ./
+RUN mkdir -p /var/log/nginx/log\
+    && mkdir /home/www\
+    && mkdir /home/www/contents
+
+# ビルド環境で構築されたdistディレクトリをnignxの該当のディレクトリに配置する
+COPY --from=build-stage ./prd_pic2fight/dist ./
+
+# nginx.confファイルを配置する
+RUN rm -f /etc/nginx/conf.d/*.conf\
+    && rm -f /etc/nginx/nginx.conf\
+    && cp -i *.conf /etc/nginx
+
+# RUN cp -i /prd_pic2fight/*.conf /etc/nginx
+
+EXPOSE 80 443
+CMD ["nginx", "-g", "daemon off;","-c","/etc/nginx/nginx.conf"]
