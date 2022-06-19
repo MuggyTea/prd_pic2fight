@@ -155,5 +155,5 @@ RUN rm -f /etc/nginx/conf.d/*.conf\
 
 # RUN cp -i /prd_pic2fight/*.conf /etc/nginx
 
-EXPOSE 80 443
+EXPOSE 80 443 8080
 CMD ["nginx", "-g", "daemon off;","-c","/etc/nginx/nginx.conf"]
