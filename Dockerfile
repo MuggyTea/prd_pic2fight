@@ -135,25 +135,25 @@ CMD gunicorn --bind :8080 --workers 1 --threads 8 --timeout 0 main:app --reload
 #CMD ["gunicorn"  , "-b", "0.0.0.0:8080", "app:app"]
 #CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers 1", "--threads 8", "--timeout 0", "main:app"]
 
-# ##### 本番環境 #####
-# FROM nginx:1.13.12-alpine as nginx
+##### 本番環境 #####
+FROM nginx:1.13.12-alpine as nginx
 
-# # contentsを配置するディレクトリを作成する
-# WORKDIR /prd_pic2fight
-# COPY --from=build-stage ./prd_pic2fight/frontend/nginx ./
-# RUN mkdir -p /var/log/nginx/log\
-#     && mkdir /home/www\
-#     && mkdir /home/www/contents
+# contentsを配置するディレクトリを作成する
+WORKDIR /prd_pic2fight
+COPY nginx ./
+RUN mkdir -p /var/log/nginx/log\
+    && mkdir /home/www\
+    && mkdir /home/www/contents
 
-# # ビルド環境で構築されたdistディレクトリをnignxの該当のディレクトリに配置する
-# COPY --from=build-stage ./prd_pic2fight/dist ./
+# ビルド環境で構築されたdistディレクトリをnignxの該当のディレクトリに配置する
+COPY --from=build-stage /prd_pic2fight/dist ./
 
-# # nginx.confファイルを配置する
-# RUN rm -f /etc/nginx/conf.d/*.conf\
-#     && rm -f /etc/nginx/nginx.conf\
-#     && cp -i *.conf /etc/nginx
+# nginx.confファイルを配置する
+RUN rm -f /etc/nginx/conf.d/*.conf\
+    && rm -f /etc/nginx/nginx.conf\
+    && cp -i *.conf /etc/nginx
 
-# # RUN cp -i /prd_pic2fight/*.conf /etc/nginx
+# RUN cp -i /prd_pic2fight/*.conf /etc/nginx
 
-# EXPOSE 80 443
-# CMD ["nginx", "-g", "daemon off;","-c","/etc/nginx/nginx.conf"]
+EXPOSE 80 443
+CMD ["nginx", "-g", "daemon off;","-c","/etc/nginx/nginx.conf"]
