@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  backend:
+    build: ./
+    image: pic2force_py
+    container_name: pic2fight_backend_container
+    ports:
+      - "8080:8080"
+    environment:
+      TZ: "Asia/Tokyo"
+    volumes:
+      - .:/prd_pic2fight
+    tty: true
+
+  frontend:
+    build: ./frontend
+    image: pic2fight_front
+    container_name: pic2fight_frontend_container
+    links:
+      - backend
+    ports:
+      - "80:80"
+    environment:
+      TZ: "Asia/Tokyo"
+    # volumes:
+    #   - ./web/vue/dist:/home/www/contents:ro

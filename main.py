@@ -23,7 +23,7 @@ import shutil
 app = Flask(__name__, static_folder='dist/static', template_folder='dist')
 CORS(app, support_credentials=True)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-logger = logging_setting('/tmp')
+logger = logging_setting('tmp')
 original_local_image_file = '/tmp/org0.jpg'
 original_local_image_file_variable = '/tmp/org'
 converted_local_image_file = '/tmp/upload0.jpg'
@@ -213,4 +213,5 @@ def output_mp4():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=80)
+    #app.run(host="0.0.0.0", port=80)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

@@ -147,6 +147,6 @@ storage.rules
 app.yaml
 frontend/cors.json
 firebase.json
-frontend/package.json
+#rontend/package.json
 tmp
 .DS_Store

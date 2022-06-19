@@ -15,10 +15,19 @@
                     src="../assets/ceter_position.png"
                     alt="中心">
             </output>
+              <output id="position_base" class="form__output" v-else>
+                <video
+                controls
+                autoplay muted playsinline
+                class="image__preview"
+                src="../assets/exsample/sample_video.mp4"
+                >
+                </video>
+              </output>
             <v-card-actions>
                 <v-spacer></v-spacer>
             <v-btn
-            color="primary"
+            color="light-blue accent-1"
             label="Select Image"
             @click="pickFile"
             v-model="imageName"
@@ -37,7 +46,7 @@
             <div>焦点を合わせる位置を変えられます。</div>
             <v-card-actions>
               <v-row>
-              <v-col>
+                <div class="input__cursor">
               左
               <input
                 type="range"
@@ -47,8 +56,8 @@
                 @change="pointerPositionX"
               >右
               {{selectedCenterX}}
-              </v-col>
-              <v-col>
+                </div>
+              <div class="input__cursor">
               上
               <input
                 type="range"
@@ -58,10 +67,11 @@
                 @change="pointerPositionY"
               >下
               {{selectedCenterY}}
-              </v-col>
+              </div>
               </v-row>
             </v-card-actions>
             <v-card-actions>
+              <div class="input__cursor">
               勢いの強さ：
             <input
               type="radio"
@@ -86,12 +96,12 @@
               name="blur"
               v-model="makeBlurVolume"
               value=0.7
-            />ゲキつよ
+            />最強
+            </div>
             </v-card-actions>
         </v-card>
       <v-btn
-        class="amber darken-2 tweetgenerate__btn"
-        dark
+        class="light-blue accent-1 tweetgenerate__btn"
         @click.prevent="ConvertPhoto"
         :disabled="processing"
         :loading="processing"
@@ -397,9 +407,9 @@ export default {
   position: relative;
 }
 .form__output > .image__preview {
-  max-width: 100%;
-  // position: relative;
-  // height: 200px;
+  max-width: 90%;
+  position: relative;
+  height: 200px;
 }
 .form__output > h3{
   position: absolute;
@@ -417,6 +427,9 @@ export default {
   transform: translate(-50%, -50%);
   // max-width: 100%;
   // height: 200px;
+}
+.input__cursor {
+  margin: auto;
 }
 // .image__pointer__position {
 //   position: absolute;

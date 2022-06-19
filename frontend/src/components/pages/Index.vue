@@ -1,27 +1,11 @@
 <template>
   <div class="index__conteiner text-center">
-    <h1>画像に勢いをつけるメーカー</h1>
+    <banner></banner>
     <h2 class="index__description">
       あなたの画像に勢いをつけます
     </h2>
-    <!-- <div class="account__tweetgenerate">
-        <select-getenrate-user
-          @generateScreenName="generateAccountName"
-        ></select-getenrate-user>
-      </div>
-      <generate-tweet-button
-      :screen_name="generateScreenName"
-      >
-      </generate-tweet-button> -->
-    <!-- <h2 v-if="!isLogin" class="login__attention">
-        ログインするとアカウント名入力省略・過去のついじぇね生成結果が見られます
-        <login />
-      </h2> -->
-    <!-- <div>
-        <twitter-time-line></twitter-time-line>
-      </div> -->
     <photo-upload />
-    <index-explain></index-explain>
+    <!-- <index-explain></index-explain> -->
     <!-- <ranking/> -->
   </div>
 </template>
@@ -29,7 +13,8 @@
 <script>
 // import Login from '../common/Login'
 // import GenerateTweetButton from '../GenerateTweetButton'
-import IndexExplain from "../common/IndexExplain";
+import Banner from "../common/Banner"
+// import IndexExplain from "../common/IndexExplain";
 // import Ranking from '../common/Ranking.vue';
 import PhotoUpload from '../PhotoUpload';
 // import SetFunction from "../SetFunction"
@@ -48,9 +33,10 @@ export default {
   components: {
     // 'login': Login,
     // 'generate-tweet-button': GenerateTweetButton,
-    "index-explain": IndexExplain,
+    // "index-explain": IndexExplain,
     // "set-function": SetFunction,
     "photo-upload": PhotoUpload,
+    "banner": Banner
     // Ranking
     // 'twitter-time-line': TwitterTimeLine,
     // 'select-getenrate-user': SelectGenerateUser

@@ -1,16 +1,22 @@
 <template>
   <footer class="footer">
     <!-- <AdSense></AdSense> -->
-    <v-footer color="primary lighten-1" padless>
-      <v-row
+    <!-- <v-footer color="primary lighten-1" padless> -->
+    <v-footer class="footer__color" padless>
+      <!-- <v-row
         justify="center"
         no-gutters
         class="amber lighten-5 py-4 text-center grey--text"
+      > -->
+      <v-row
+        justify="center"
+        no-gutters
+        class="footer__color py-4 text-center black--text"
       >
         <v-btn
           v-for="link in links"
           :key="link"
-          color="grey"
+          color="black"
           text
           rounded
           class="footer__col1"
@@ -19,7 +25,7 @@
           {{ link.name }}
         </v-btn>
         <v-btn
-          color="grey"
+          color="black"
           text
           rounded
           class="footer__col1"
@@ -28,7 +34,7 @@
           製作者Twitter
         </v-btn>
         <v-btn
-          color="grey"
+          color="black"
           text
           rounded
           class="footer__col1"
@@ -44,9 +50,10 @@
     >
       <Login />
     </v-btn> -->
-        <v-col class="amber lighten-5 py-1 text-center grey--text" cols="12">
+      <v-col class="footer__color py-1 text-center black--text" cols="12">
+        <!-- <v-col class="amber lighten-5 py-1 text-center grey--text" cols="12"> -->
           <v-btn
-          color="grey"
+          color="black"
           text
           rounded
           class="footer__col1"
@@ -55,7 +62,8 @@
           Author: むぎちゃ/ MuggyTea
         </v-btn>
         </v-col>
-        <v-col class="amber lighten-5 py-1 text-center grey--text" cols="12">
+        <v-col class="footer__color py-1 text-center black--text" cols="12">
+        <!-- <v-col class="amber lighten-5 py-1 text-center grey--text" cols="12"> -->
           2021/8 - {{ new Date().getFullYear() }} --
           <strong>Copyright 画像に勢いをつけるメーカー</strong>
         </v-col>
@@ -99,5 +107,9 @@ export default {
 <style>
 .footer__col1 {
   font-size: 10px;
+}
+
+.footer__color {
+  background-color: rgb(226,218,197);
 }
 </style>

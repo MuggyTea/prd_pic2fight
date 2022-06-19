@@ -1,0 +1,6 @@
+libopenh264*
+*.jpeg
+frontend
+.github
+.history
+__pycache__
