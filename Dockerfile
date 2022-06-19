@@ -50,97 +50,72 @@ EXPOSE 8080:8080
 WORKDIR /prd_pic2fight
 # RUN apt-get update && apt-get upgrade -y
 # RUN apt-get install -y python3-opencv
-ENV OPENCV_VERSION="4.5.1"
+# ENV OPENCV_VERSION="4.5.1"
 
-RUN apt-get -qq update \
-    && apt-get -qq install -y --no-install-recommends \
-        build-essential \
-        cmake \
-        git \
-        wget \
-        unzip \
-        yasm \
-        pkg-config \
-        libswscale-dev \
-        libtbb2 \
-        libtbb-dev \
-        libjpeg-dev \
-        libpng-dev \
-        libtiff-dev \
-        libopenjp2-7-dev \
-        libavformat-dev \
-        libpq-dev libgl1-mesa-glx ffmpeg libsm6 libxrender1 libxext6 x264 x265
-COPY requirements.txt .
-RUN pip install --upgrade pip
+# RUN apt-get -qq update \
+#     && apt-get -qq install -y --no-install-recommends \
+#         build-essential \
+#         cmake \
+#         git \
+#         wget \
+#         unzip \
+#         yasm \
+#         pkg-config \
+#         libswscale-dev \
+#         libtbb2 \
+#         libtbb-dev \
+#         libjpeg-dev \
+#         libpng-dev \
+#         libtiff-dev \
+#         libopenjp2-7-dev \
+#         libavformat-dev \
+#         libpq-dev libgl1-mesa-glx ffmpeg libsm6 libxrender1 libxext6 x264 x265
+# COPY requirements.txt .
+# RUN pip install --upgrade pip
 
-RUN pip install -r requirements.txt
+# RUN pip install -r requirements.txt
 
-RUN cd ~/ &&\
-    git clone https://github.com/opencv/opencv.git &&\
-    git clone https://github.com/opencv/opencv_contrib.git &&\
-    cd opencv && mkdir build && cd build &&\
-    cmake \
-        -D BUILD_TIFF=ON \
-        -D BUILD_opencv_java=OFF \
-        -D WITH_CUDA=OFF \
-        -D WITH_OPENGL=ON \
-        -D WITH_OPENCL=ON \
-        # -D WITH_IPP=ON \
-        -D WITH_TBB=OFF \
-        -D WITH_EIGEN=ON \
-        -D WITH_V4L=ON \
-        -D BUILD_TESTS=OFF \
-        -D BUILD_PERF_TESTS=OFF \
-        -D CMAKE_BUILD_TYPE=RELEASE \
-        # -D CMAKE_INSTALL_PREFIX=$(python3.9 -c "import sys; print(sys.prefix)") \
-        # -D PYTHON3_EXECUTABLE=$(which python3.9) \
-        # -D PYTHON3_INCLUDE_DIR=$(python3.9 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
-        # -D PYTHON3_PACKAGES_PATH=$(python3.9 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
-        -D CMAKE_INSTALL_PREFIX=/usr/local \
-        -D PYTHON3_EXECUTABLE=/usr/local/bin/python3.9 \
-        -D PYTHON_PACKAGES_PATH=/usr/local/lib/python3.9/site-packages \
-        -D PYTHON_INCLUDE_DIR=/usr/local/include/python3.9 \
-        # -D PYTHON_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python3.9 \
-        -D PYTHON3_LIBRARY=/usr/local/lib/libpython3.9.so \
-        ..\
-    && make -j$(nproc) \
-    && make install
-
-# COPY . .
-
-# fffmpeg
-# FROM continuumio/miniconda3 as ffmpeg
-
-# # WORKDIR /prd_pic2fight
-# ENV buildDeps='unzip build-essential curl pkg-config'
-# RUN apt-get update && \
-#     apt-get install -y --no-install-recommends \
-#     $buildDeps \
-#     nasm \
-#     libmp3lame-dev \
-#     libopus-dev \
-#     libvorbis-dev \
-#     libvpx-dev
-
-# OpenCV packeges
-# COPY install_ffmpeg_supporting_openh264.sh ./
-# RUN chmod 755 ./install_ffmpeg_supporting_openh264.sh && ./install_ffmpeg_supporting_openh264.sh
+# RUN cd ~/ &&\
+#     git clone https://github.com/opencv/opencv.git &&\
+#     git clone https://github.com/opencv/opencv_contrib.git &&\
+#     cd opencv && mkdir build && cd build &&\
+#     cmake \
+#         -D BUILD_TIFF=ON \
+#         -D BUILD_opencv_java=OFF \
+#         -D WITH_CUDA=OFF \
+#         -D WITH_OPENGL=ON \
+#         -D WITH_OPENCL=ON \
+#         # -D WITH_IPP=ON \
+#         -D WITH_TBB=OFF \
+#         -D WITH_EIGEN=ON \
+#         -D WITH_V4L=ON \
+#         -D BUILD_TESTS=OFF \
+#         -D BUILD_PERF_TESTS=OFF \
+#         -D CMAKE_BUILD_TYPE=RELEASE \
+#         # -D CMAKE_INSTALL_PREFIX=$(python3.9 -c "import sys; print(sys.prefix)") \
+#         # -D PYTHON3_EXECUTABLE=$(which python3.9) \
+#         # -D PYTHON3_INCLUDE_DIR=$(python3.9 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
+#         # -D PYTHON3_PACKAGES_PATH=$(python3.9 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
+#         -D CMAKE_INSTALL_PREFIX=/usr/local \
+#         -D PYTHON3_EXECUTABLE=/usr/local/bin/python3.9 \
+#         -D PYTHON_PACKAGES_PATH=/usr/local/lib/python3.9/site-packages \
+#         -D PYTHON_INCLUDE_DIR=/usr/local/include/python3.9 \
+#         # -D PYTHON_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python3.9 \
+#         -D PYTHON3_LIBRARY=/usr/local/lib/libpython3.9.so \
+#         ..\
+#     && make -j$(nproc) \
+#     && make install
 
 COPY . .
-# RUN apt-get purge -y --auto-remove $buildDeps
-# RUN rm ./install_ffmpeg_supporting_openh264.sh
 
-#CMD ["python", "main.py"]
 CMD gunicorn --bind :8080 --workers 1 --threads 8 --timeout 0 main:app --reload
-#CMD ["gunicorn"  , "-b", "0.0.0.0:8080", "app:app"]
-#CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers 1", "--threads 8", "--timeout 0", "main:app"]
 
 ##### 本番環境 #####
 FROM nginx:1.13.12-alpine as nginx
 
 # contentsを配置するディレクトリを作成する
 WORKDIR /prd_pic2fight
-COPY nginx ./
+COPY --from=build-stage /prd_pic2fight/nginx ./
 RUN mkdir -p /var/log/nginx/log\
     && mkdir /home/www\
     && mkdir /home/www/contents
