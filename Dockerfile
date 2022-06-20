@@ -102,14 +102,14 @@ RUN cd ~/ &&\
         # -D PYTHON_PACKAGES_PATH=/usr/local/lib/python3.9/site-packages \
         # -D PYTHON_INCLUDE_DIR=/usr/local/include/python3.9 \
         # -D PYTHON_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python3.9 \
-        # -D PYTHON3_LIBRARY=/usr/local/lib/libpython3.9.so \
+        -D PYTHON3_LIBRARY=/usr/local/lib/libpython3.9.so \
         ..\
     && make -j$(nproc) \
     && make install
 
 # COPY . ./
 
-CMD gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app --reload
+CMD gunicorn --bind :PORT --workers 1 --threads 8 --timeout 0 main:app --reload
 
 # ##### 本番環境 #####
 # FROM nginx:1.13.12-alpine as nginx
