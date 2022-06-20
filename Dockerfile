@@ -48,87 +48,85 @@ EXPOSE 8080:8080
 #ENV APP_HOME /main.py
 
 WORKDIR /prd_pic2fight
-# RUN apt-get update && apt-get upgrade -y
-# RUN apt-get install -y python3-opencv
+COPY . ./
+RUN apt-get update && apt-get upgrade -y
+
 # ENV OPENCV_VERSION="4.5.1"
 
-# RUN apt-get -qq update \
-#     && apt-get -qq install -y --no-install-recommends \
-#         build-essential \
-#         cmake \
-#         git \
-#         wget \
-#         unzip \
-#         yasm \
-#         pkg-config \
-#         libswscale-dev \
-#         libtbb2 \
-#         libtbb-dev \
-#         libjpeg-dev \
-#         libpng-dev \
-#         libtiff-dev \
-#         libopenjp2-7-dev \
-#         libavformat-dev \
-#         libpq-dev libgl1-mesa-glx ffmpeg libsm6 libxrender1 libxext6 x264 x265
-# COPY requirements.txt .
-# RUN pip install --upgrade pip
+RUN apt-get -qq update \
+    && apt-get -qq install -y --no-install-recommends \
+        build-essential \
+        cmake \
+        git \
+        wget \
+        unzip \
+        yasm \
+        pkg-config \
+        libswscale-dev \
+        libtbb2 \
+        libtbb-dev \
+        libjpeg-dev \
+        libpng-dev \
+        libtiff-dev \
+        libopenjp2-7-dev \
+        libavformat-dev \
+        libpq-dev libgl1-mesa-glx ffmpeg libsm6 libxrender1 libxext6 x264 x265
+RUN pip install --upgrade pip
 
-# RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# RUN cd ~/ &&\
-#     git clone https://github.com/opencv/opencv.git &&\
-#     git clone https://github.com/opencv/opencv_contrib.git &&\
-#     cd opencv && mkdir build && cd build &&\
-#     cmake \
-#         -D BUILD_TIFF=ON \
-#         -D BUILD_opencv_java=OFF \
-#         -D WITH_CUDA=OFF \
-#         -D WITH_OPENGL=ON \
-#         -D WITH_OPENCL=ON \
-#         # -D WITH_IPP=ON \
-#         -D WITH_TBB=OFF \
-#         -D WITH_EIGEN=ON \
-#         -D WITH_V4L=ON \
-#         -D BUILD_TESTS=OFF \
-#         -D BUILD_PERF_TESTS=OFF \
-#         -D CMAKE_BUILD_TYPE=RELEASE \
-#         # -D CMAKE_INSTALL_PREFIX=$(python3.9 -c "import sys; print(sys.prefix)") \
-#         # -D PYTHON3_EXECUTABLE=$(which python3.9) \
-#         # -D PYTHON3_INCLUDE_DIR=$(python3.9 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
-#         # -D PYTHON3_PACKAGES_PATH=$(python3.9 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
-#         -D CMAKE_INSTALL_PREFIX=/usr/local \
-#         -D PYTHON3_EXECUTABLE=/usr/local/bin/python3.9 \
-#         -D PYTHON_PACKAGES_PATH=/usr/local/lib/python3.9/site-packages \
-#         -D PYTHON_INCLUDE_DIR=/usr/local/include/python3.9 \
-#         # -D PYTHON_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python3.9 \
-#         -D PYTHON3_LIBRARY=/usr/local/lib/libpython3.9.so \
-#         ..\
-#     && make -j$(nproc) \
-#     && make install
+RUN cd ~/ &&\
+    git clone https://github.com/opencv/opencv.git &&\
+    git clone https://github.com/opencv/opencv_contrib.git &&\
+    cd opencv && mkdir build && cd build &&\
+    cmake \
+        -D BUILD_TIFF=ON \
+        -D BUILD_opencv_java=OFF \
+        -D WITH_CUDA=OFF \
+        -D WITH_OPENGL=ON \
+        -D WITH_OPENCL=ON \
+        # -D WITH_IPP=ON \
+        -D WITH_TBB=OFF \
+        -D WITH_EIGEN=ON \
+        -D WITH_V4L=ON \
+        -D BUILD_TESTS=OFF \
+        -D BUILD_PERF_TESTS=OFF \
+        -D CMAKE_BUILD_TYPE=RELEASE \
+        # -D CMAKE_INSTALL_PREFIX=$(python3.9 -c "import sys; print(sys.prefix)") \
+        # -D PYTHON3_EXECUTABLE=$(which python3.9) \
+        # -D PYTHON3_INCLUDE_DIR=$(python3.9 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
+        # -D PYTHON3_PACKAGES_PATH=$(python3.9 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
+        -D CMAKE_INSTALL_PREFIX=/usr/local \
+        -D PYTHON3_EXECUTABLE=/usr/local/bin/python3.9 \
+        -D PYTHON_PACKAGES_PATH=/usr/local/lib/python3.9/site-packages \
+        -D PYTHON_INCLUDE_DIR=/usr/local/include/python3.9 \
+        # -D PYTHON_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python3.9 \
+        -D PYTHON3_LIBRARY=/usr/local/lib/libpython3.9.so \
+        ..\
+    && make -j$(nproc) \
+    && make install
 
-COPY . .
+CMD gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app --reload
 
-CMD gunicorn --bind 127.0.0.1:8080 --workers 1 --threads 8 --timeout 0 main:app --reload
+# ##### 本番環境 #####
+# FROM nginx:1.13.12-alpine as nginx
 
-##### 本番環境 #####
-FROM nginx:1.13.12-alpine as nginx
+# # contentsを配置するディレクトリを作成する
+# WORKDIR /prd_pic2fight
+# COPY --from=build-stage /prd_pic2fight/nginx ./
+# RUN mkdir -p /var/log/nginx/log\
+#     && mkdir /home/www\
+#     && mkdir /home/www/contents
 
-# contentsを配置するディレクトリを作成する
-WORKDIR /prd_pic2fight
-COPY --from=build-stage /prd_pic2fight/nginx ./
-RUN mkdir -p /var/log/nginx/log\
-    && mkdir /home/www\
-    && mkdir /home/www/contents
+# # ビルド環境で構築されたdistディレクトリをnignxの該当のディレクトリに配置する
+# COPY --from=build-stage /prd_pic2fight/dist ./
 
-# ビルド環境で構築されたdistディレクトリをnignxの該当のディレクトリに配置する
-COPY --from=build-stage /prd_pic2fight/dist ./
+# # nginx.confファイルを配置する
+# RUN rm -f /etc/nginx/conf.d/*.conf\
+#     && rm -f /etc/nginx/nginx.conf\
+#     && cp -i *.conf /etc/nginx
 
-# nginx.confファイルを配置する
-RUN rm -f /etc/nginx/conf.d/*.conf\
-    && rm -f /etc/nginx/nginx.conf\
-    && cp -i *.conf /etc/nginx
+# # RUN cp -i /prd_pic2fight/*.conf /etc/nginx
 
-# RUN cp -i /prd_pic2fight/*.conf /etc/nginx
-
-EXPOSE 80 443 8080
-CMD ["nginx", "-g", "daemon off;","-c","/etc/nginx/nginx.conf"]
+# EXPOSE 80 443 8080
+# CMD ["nginx", "-g", "daemon off;","-c","/etc/nginx/nginx.conf"]
