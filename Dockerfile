@@ -97,12 +97,13 @@ RUN cd ~/ &&\
         -D PYTHON3_EXECUTABLE=$(which python3.9) \
         -D PYTHON_INCLUDE_DIR=$(python3.9 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
         -D PYTHON_PACKAGES_PATH=$(python3.9 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
+        -D PYTHON3_LIBRARY=$(find / -name libpython3.9.so) \
         # -D CMAKE_INSTALL_PREFIX=/usr/local \
         # -D PYTHON3_EXECUTABLE=/usr/local/bin/python3.9 \
         # -D PYTHON_PACKAGES_PATH=/usr/local/lib/python3.9/site-packages \
         # -D PYTHON_INCLUDE_DIR=/usr/local/include/python3.9 \
         # -D PYTHON_INCLUDE_DIR2=/usr/include/x86_64-linux-gnu/python3.9 \
-        -D PYTHON3_LIBRARY=/usr/local/lib/libpython3.9.so \
+        # -D PYTHON3_LIBRARY=/usr/local/lib/libpython3.9.so \
         ..\
     && make -j$(nproc) \
     && make install
